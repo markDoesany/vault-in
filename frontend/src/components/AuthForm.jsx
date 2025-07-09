@@ -67,7 +67,7 @@ const AuthForm = ({ type, onSubmit }) => {
     // In a real app, you would redirect to login or automatically log them in
     // For now, we'll just close the modal and show a success message
     setShowForgotPasswordModal(false);
-    alert('Password has been reset successfully. Please log in with your new password.');
+    // alert('Password has been reset successfully. Please log in with your new password.'); // Modal handles this now
     
     // Clear the form
     setForm({
@@ -149,7 +149,7 @@ const AuthForm = ({ type, onSubmit }) => {
           {showEmailTooltip && (
             <div
               id="email-otp-tooltip"
-              className="absolute left-0 mt-2 w-72 bg-primary dark:bg-secondary text-gold dark:text-gold text-xs rounded-xl shadow-confident px-4 py-3 z-10 border border-silver dark:border-gold animate-fade-in"
+              className="absolute left-0 mt-2 w-72 bg-secondary text-text-primary text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border animate-fade-in"
               role="tooltip"
             >
               Whenever you log in, a one-time passcode (OTP) will be sent to this email address for verification.
@@ -176,19 +176,19 @@ const AuthForm = ({ type, onSubmit }) => {
           {showPasswordTooltip && (
             <div
               id="password-req-tooltip"
-              className="absolute left-0 mt-2 w-80 bg-primary dark:bg-secondary text-gold dark:text-gold text-xs rounded-xl shadow-confident px-4 py-3 z-10 border border-silver dark:border-gold animate-fade-in"
+              className="absolute left-0 mt-2 w-80 bg-secondary text-text-primary text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border animate-fade-in"
               role="tooltip"
             >
-              <div className="mb-2 text-gold font-semibold">Password must contain:</div>
+              <div className="mb-2 text-text-primary font-semibold">Password must contain:</div>
               <ul className="space-y-1">
                 {passwordChecks.map((req, idx) => {
                   const passed = req.test(form.password);
                   return (
                     <li key={idx} className="flex items-center gap-2">
-                      <span className={passed ? 'text-gold' : 'text-silver dark:text-gold'}>
+                      <span className={passed ? 'text-success' : 'text-error'}>
                         {passed ? '✔️' : '❌'}
                       </span>
-                      <span className={passed ? 'text-gold' : 'text-silver dark:text-gold'}>{req.label}</span>
+                      <span className={passed ? 'text-text-primary' : 'text-text-secondary'}>{req.label}</span>
                     </li>
                   );
                 })}
