@@ -1,40 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+/* Removed Google Font import, Tailwind will use the sans-serif stack defined in config */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f5f6fa;
-  color: #1a2238;
+  @apply font-sans bg-background text-text-primary;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased; /* Improves font rendering */
+  -moz-osx-font-smoothing: grayscale; /* Improves font rendering */
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  color: #1a2238;
+  @apply font-bold text-text-primary; /* Using Tailwind utility for consistency */
 }
 
 a {
-  color: #ffbf00;
-  font-weight: 600;
-  transition: color 0.2s;
+  @apply text-accent font-semibold;
+  transition: color 0.2s ease-in-out; /* Smoother transition */
 }
 a:hover {
-  color: #c0c0c0;
+  @apply text-primary-dark; /* Using a color from the new palette */
 }
 
-button, .btn {
-  background-color: #1a2238;
-  color: #ffbf00;
-  font-weight: 700;
-  border-radius: 1rem;
-  box-shadow: 0 4px 24px 0 rgba(26,34,56,0.12);
-  border: 1px solid #c0c0c0;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+/* Base button styling */
+.btn {
+  /* Light gray button with dark blue text */
+  @apply px-4 py-2 rounded font-semibold text-primary bg-secondary border border-primary;
+  @apply transition-colors duration-150 ease-in-out;
+  cursor: pointer;
 }
-button:hover, .btn:hover {
-  background-color: #23272f;
-  color: #fff;
-  box-shadow: 0 6px 32px 0 rgba(26,34,56,0.18);
+
+.btn:hover {
+  /* Darker gray background and darker blue text on hover */
+  @apply bg-secondary-dark text-primary-dark border-primary-dark;
+}
+
+.btn:focus {
+  @apply outline-none ring-2 ring-offset-2 ring-primary; /* Accessibility: focus ring */
+}
+
+/* This is now the primary button style, let's make btn-primary explicit if needed, or adjust btn-secondary if it should differ */
+.btn-primary {
+  @apply px-4 py-2 rounded font-semibold text-primary bg-secondary border border-primary;
+  @apply transition-colors duration-150 ease-in-out;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  @apply bg-secondary-dark text-primary-dark border-primary-dark;
+}
+
+
+/* If a secondary button style is still needed, it might be a blue button or a more subtle gray */
+.btn-secondary {
+  /* Example: Blue button with white text, less prominent than the old primary */
+  @apply bg-accent text-background border-accent;
+}
+.btn-secondary:hover {
+  @apply bg-primary border-primary; /* Using primary as hover for accent */
+}
+
+/* Input field styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea {
+  @apply block w-full px-3 py-2 border border-border rounded shadow-sm;
+  @apply focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary;
+  @apply placeholder-text-secondary;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Styling for form elements to give a more "classic" feel */
+.form-label {
+  @apply block text-sm font-medium text-text-primary mb-1;
+}
+
+.form-container {
+  @apply bg-white p-6 md:p-8 shadow-lg rounded-lg border border-border;
+  max-width: 450px; /* Or your preferred max-width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Card styling */
+.card {
+  @apply bg-white shadow-md rounded-lg border border-border p-4 md:p-6;
 }
