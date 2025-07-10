@@ -1,10 +1,20 @@
 import React from 'react';
 import { FaUserCircle, FaTimes } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const ProfileSection = ({
+export default function ProfileSection({ // Changed to export default function
   profileOpen,
   setProfileOpen,
-}) => (
+  openChangeMasterPasswordModal, // Add prop to open the modal
+}) {
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleLogout = () => {
+    // Potentially clear session/token here in a real app
+    navigate('/login');
+  };
+
+  return (
   <>
     {/* Floating Action Button (FAB) */}
     <button
@@ -41,14 +51,17 @@ const ProfileSection = ({
           )} */}
           <button
             className="w-full mt-2 px-4 py-2 rounded-xl bg-silver dark:bg-gold text-primary font-bold shadow-confident border border-silver dark:border-gold hover:bg-gold dark:hover:bg-primary hover:text-gold dark:hover:text-gold transition-colors"
-            // onClick={handleChangePassword}
+            onClick={() => {
+              openChangeMasterPasswordModal();
+              setProfileOpen(false); // Close profile section modal
+            }}
             type="button"
           >
             Change Master Password
           </button>
           <button
             className="w-full mt-2 px-4 py-2 rounded-xl bg-red-500 dark:bg-red-700 text-white font-bold shadow-confident border border-red-500 dark:border-red-400 hover:bg-red-600 dark:hover:bg-primary hover:text-gold dark:hover:text-gold transition-colors"
-            // onClick={handleLogout}
+            onClick={handleLogout}
             type="button"
           >
             Logout
@@ -58,5 +71,5 @@ const ProfileSection = ({
     )}
   </>
 );
-
-export default ProfileSection;
+} // Added closing brace for the function component
+// Removed redundant export default ProfileSection;

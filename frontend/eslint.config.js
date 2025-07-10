@@ -26,4 +26,13 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  {
+    files: ['tailwind.config.js', 'postcss.config.cjs'], // Target specific config files
+    languageOptions: {
+      sourceType: 'commonjs', // Specify they are CommonJS
+      globals: {
+        ...globals.node, // Add Node.js globals like module, require, etc.
+      },
+    },
+  }
 ])

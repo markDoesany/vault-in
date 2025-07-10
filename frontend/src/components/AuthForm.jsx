@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
-const AuthForm = ({ type, onSubmit }) => {
+const AuthForm = ({ type }) => { // Removed onSubmit
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -53,7 +53,7 @@ const AuthForm = ({ type, onSubmit }) => {
     navigate('/login');
   };
 
-  const handleForgotPassword = async (newPassword) => {
+  const handleForgotPassword = async () => { // Removed newPassword parameter
     // In a real app, this would make an API call to reset the password
     // and clear the vault data on the server side
     console.log('Resetting password and clearing vault data...');
