@@ -3,122 +3,153 @@
 @tailwind utilities;
 
 :root {
-  /* Tokyo Night Color Scheme */
+  /* Light Theme Semantic Colors (from tailwind.config.js) */
+  --background: #f0f2f5;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --secondary: #9ca3af;
+  --secondary-foreground: #1f2937;
+  --muted: #d1d5db;
+  --muted-foreground: #4b5563;
+  --accent: #ec4899;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
+  --input: #e5e7eb;
+  --ring: #4f46e5;
+
+  /* Tokyo Night Palette (for direct use or reference) */
   --tn-bg: #1a1b26;
   --tn-fg: #c0caf5;
+  --tn-card: #24283b;
+  --tn-border: #414868;
   --tn-comment: #565f89;
   --tn-blue: #7aa2f7;
   --tn-cyan: #7dcfff;
   --tn-green: #9ece6a;
   --tn-purple: #bb9af7;
   --tn-red: #f7768e;
-  --tn-yellow: #e0af68;
   --tn-orange: #ff9e64;
-  
-  /* Base colors */
-  --background: #ffffff;
-  --text-primary: #1a1b26;
-  --accent: #7aa2f7;
-  --primary: #7aa2f7;
-  --secondary: #7dcfff;
-  --primary-dark: #565f89;
-  --secondary-dark: #565f89;
+  --tn-yellow: #e0af68;
 }
 
 .dark {
+  /* Dark Theme Semantic Colors (mapping to Tokyo Night) */
   --background: var(--tn-bg);
-  --text-primary: var(--tn-fg);
-  --accent: var(--tn-blue);
+  --foreground: var(--tn-fg);
+  --card: var(--tn-card);
+  --card-foreground: var(--tn-fg);
+  --popover: var(--tn-card);
+  --popover-foreground: var(--tn-fg);
   --primary: var(--tn-blue);
-  --secondary: var(--tn-cyan);
-  --primary-dark: var(--tn-comment);
-  --secondary-dark: var(--tn-comment);
+  --primary-foreground: var(--tn-bg); /* Text on primary buttons (dark theme) */
+  --secondary: var(--tn-comment);
+  --secondary-foreground: var(--tn-fg);
+  --muted: var(--tn-border);
+  --muted-foreground: var(--tn-comment);
+  --accent: var(--tn-purple);
+  --accent-foreground: var(--tn-bg);
+  --destructive: var(--tn-red);
+  --destructive-foreground: var(--tn-bg);
+  --border: var(--tn-border);
+  --input: var(--tn-card); /* Input bg in dark mode */
+  --ring: var(--tn-blue);
 }
 
 body {
-  @apply font-sans bg-background dark:bg-tn-bg text-text-primary dark:text-tn-fg;
+  @apply font-sans bg-background text-foreground;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  @apply font-bold text-text-primary dark:text-tn-fg;
+  @apply font-bold text-foreground;
 }
 
 a {
-  @apply text-accent dark:text-tn-blue font-semibold;
+  @apply font-semibold text-primary dark:text-accent;
   transition: color 0.2s ease-in-out;
 }
 a:hover {
-  @apply text-primary-dark dark:text-tn-cyan;
+  @apply text-primary-foreground bg-primary dark:text-accent-foreground dark:bg-accent; /* Example hover */
 }
 
-/* Base button styling */
+/* Base button styling using semantic names from tailwind.config.js */
 .btn {
   @apply px-4 py-2 rounded font-semibold;
-  @apply text-primary bg-secondary border border-primary; /* Light theme */
-  @apply dark:text-tn-fg dark:bg-tn-card dark:border-tn-blue; /* Dark theme */
+  @apply bg-primary text-primary-foreground border border-transparent;
+  /* Dark theme versions will be handled by Tailwind's dark: prefix on components,
+     or we can define specific dark versions here if needed for .btn base */
+  @apply dark:bg-dark-primary dark:text-dark-primary-foreground;
   @apply transition-colors duration-150 ease-in-out;
   cursor: pointer;
 }
 
 .btn:hover {
-  @apply bg-secondary-dark text-primary-dark border-primary-dark; /* Light theme hover */
-  @apply dark:bg-tn-comment dark:text-tn-cyan dark:border-tn-cyan; /* Dark theme hover */
+  /* Example: Slightly darken/lighten primary or use a secondary/accent color for hover */
+  @apply bg-opacity-90 dark:bg-opacity-90;
 }
 
 .btn:focus {
-  @apply outline-none ring-2 ring-offset-2 ring-primary dark:ring-tn-blue;
+  @apply outline-none ring-2 ring-offset-2 ring-ring dark:ring-dark-ring ring-offset-background dark:ring-offset-dark-background;
 }
 
-.btn-primary {
-  @apply px-4 py-2 rounded font-semibold;
-  @apply text-primary bg-secondary border border-primary; /* Light theme */
-  @apply dark:text-tn-bg dark:bg-tn-blue dark:border-tn-blue; /* Dark theme: Blue button, dark text */
-  @apply transition-colors duration-150 ease-in-out;
-  cursor: pointer;
-}
-.btn-primary:hover {
-  @apply bg-secondary-dark text-primary-dark border-primary-dark; /* Light theme hover */
-  @apply dark:bg-tn-cyan dark:text-tn-bg dark:border-tn-cyan; /* Dark theme hover */
+.btn-primary { /* This class might become more specific or rely on utility composition */
+  @apply bg-primary text-primary-foreground hover:bg-opacity-80;
+  @apply dark:bg-dark-primary dark:text-dark-primary-foreground dark:hover:bg-opacity-80;
 }
 
 .btn-secondary {
-  @apply bg-accent text-background border-accent; /* Light theme */
-  @apply dark:bg-tn-comment dark:text-tn-fg dark:border-tn-comment; /* Dark theme: Subtle button */
-}
-.btn-secondary:hover {
-  @apply bg-primary border-primary; /* Light theme hover */
-  @apply dark:bg-tn-border dark:text-tn-cyan; /* Dark theme hover */
+  @apply bg-secondary text-secondary-foreground hover:bg-opacity-80;
+  @apply dark:bg-dark-secondary dark:text-dark-secondary-foreground dark:hover:bg-opacity-80;
 }
 
-/* Input field styling */
+.btn-destructive {
+  @apply bg-destructive text-destructive-foreground hover:bg-opacity-80;
+  @apply dark:bg-dark-destructive dark:text-dark-destructive-foreground dark:hover:bg-opacity-80;
+}
+
+/* Input field styling using semantic names */
+/* Components should ideally use Tailwind classes directly for inputs,
+   but this provides a base if raw <input> tags are used or for global styling. */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="search"],
-textarea {
+textarea,
+select {
   @apply block w-full px-3 py-2 rounded shadow-sm;
-  @apply border border-border dark:border-tn-border;
-  @apply bg-background dark:bg-tn-card; /* Input background */
-  @apply text-text-primary dark:text-tn-fg; /* Input text */
-  @apply placeholder-text-secondary dark:placeholder-tn-comment;
-  @apply focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-tn-blue focus:border-primary dark:focus:border-tn-blue;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  @apply border border-border bg-input text-foreground;
+  @apply placeholder-muted-foreground;
+  @apply focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring;
+  /* Dark theme styles are applied via Tailwind's dark: prefix in components or here */
+  @apply dark:border-dark-border dark:bg-dark-input dark:text-dark-foreground dark:placeholder-dark-muted-foreground;
+  @apply dark:focus:ring-dark-ring dark:focus:border-dark-ring;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.3s ease, color 0.3s ease;
 }
 
 .form-label {
-  @apply block text-sm font-medium text-text-primary dark:text-tn-fg mb-1;
+  @apply block text-sm font-medium text-foreground mb-1;
 }
 
+/* General container/card styling using semantic names */
+/* These are examples; components will primarily use Tailwind utilities */
 .form-container {
-  @apply bg-white dark:bg-tn-card p-6 md:p-8 shadow-lg rounded-lg border border-border dark:border-tn-border;
+  @apply bg-card text-card-foreground p-6 md:p-8 shadow-lg rounded-lg border border-border;
   max-width: 450px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .card {
-  @apply bg-white dark:bg-tn-card shadow-md rounded-lg border border-border dark:border-tn-border p-4 md:p-6;
+  @apply bg-card text-card-foreground shadow-md rounded-lg border border-border p-4 md:p-6;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

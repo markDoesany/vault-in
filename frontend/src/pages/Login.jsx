@@ -9,13 +9,13 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-background dark:bg-primary font-poppins">
-      <div className="w-full max-w-md bg-white dark:bg-primary rounded-xl shadow-confident border border-silver dark:border-gold p-8">
-        <AuthForm type="login" onSubmit={handleLogin} />
-      </div>
-      <p className="text-center mt-4 text-sm text-primary dark:text-gold font-poppins">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-background dark:bg-dark-background text-foreground dark:text-dark-foreground font-poppins p-4">
+      {/* The AuthForm component itself is already themed. We just need to ensure the container and link are themed. */}
+      {/* The AuthForm already has its own card-like styling, so we don't need to wrap it in another card here. */}
+      <AuthForm type="login" onSubmit={handleLogin} />
+      <p className="text-center mt-4 text-sm text-muted-foreground dark:text-dark-muted-foreground font-poppins">
         Don&apos;t have an account?{' '}
-        <Link to="/signup" className="text-gold dark:text-gold hover:text-silver dark:hover:text-silver font-semibold transition-colors">Sign up</Link>
+        <Link to="/signup" className="text-primary dark:text-dark-primary hover:underline font-semibold transition-colors">Sign up</Link>
       </p>
     </div>
   );

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaTimes } from 'react-icons/fa'; // Added FaTimes
 
 const PasswordRequirement = ({ meets, label }) => (
-  <li className={`flex items-center text-sm ${meets ? 'text-green-500' : 'text-red-500'}`}>
-    {meets ? <FaCheckCircle className="mr-2" /> : <FaTimesCircle className="mr-2" />}
-    {label}
+  <li className={`flex items-center text-sm ${meets ? 'text-tn-green' : 'text-destructive dark:text-dark-destructive'}`}>
+    {meets ? <FaCheckCircle className="mr-2 text-tn-green" /> : <FaTimesCircle className="mr-2 text-destructive dark:text-dark-destructive" />}
+    <span className="text-foreground dark:text-dark-foreground">{label}</span>
   </li>
 );
 
@@ -53,29 +53,34 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const inputClasses = "w-full px-4 py-2 border border-border dark:border-dark-border rounded-lg focus:ring-ring focus:border-ring dark:focus:ring-dark-ring dark:focus:border-dark-ring bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground";
+  const labelClasses = "block text-sm font-medium text-foreground dark:text-dark-foreground mb-1";
+  const eyeButtonClasses = "absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-muted-foreground dark:text-dark-muted-foreground hover:text-primary dark:hover:text-dark-primary";
+
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 dark:bg-opacity-70 p-4" onClick={onClose}>
       <div
-        className="relative bg-white dark:bg-secondary border border-gold dark:border-gold rounded-2xl shadow-confident p-6 sm:p-8 w-[95vw] max-w-md flex flex-col"
+        className="relative bg-card text-card-foreground dark:bg-dark-card dark:text-dark-card-foreground border border-border dark:border-dark-border rounded-2xl shadow-xl p-6 sm:p-8 w-[95vw] max-w-md flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-gold dark:hover:text-gold focus:outline-none"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground dark:text-dark-muted-foreground dark:hover:text-dark-foreground focus:outline-none"
           onClick={onClose}
           type="button"
           aria-label="Close change master password modal"
         >
-          <FaTimesCircle />
+          <FaTimes size={20} />
         </button>
-        <h2 className="text-xl font-bold text-primary dark:text-gold mb-6 text-center">Change Master Password</h2>
+        <h2 className="text-xl font-bold text-foreground dark:text-dark-foreground mb-6 text-center">Change Master Password</h2>
 
-        {error && <p className="text-red-500 bg-red-100 dark:bg-red-900 dark:text-red-300 p-3 rounded-md text-sm mb-4">{error}</p>}
+        {error && <p className="text-destructive-foreground bg-destructive/20 dark:bg-dark-destructive/30 border border-destructive dark:border-dark-destructive p-3 rounded-md text-sm mb-4">{error}</p>}
 
         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
           <div className="space-y-4">
             {/* Old Password */}
             <div className="relative">
-              <label className="block text-sm font-medium text-primary dark:text-gray-300 mb-1" htmlFor="oldPassword">
+              <label className={labelClasses} htmlFor="oldPassword">
                 Old Password
               </label>
               <input
@@ -83,13 +88,13 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
                 type={showOldPassword ? 'text' : 'password'}
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-gold focus:border-gold dark:bg-primary dark:text-gray-100"
+                className={inputClasses}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowOldPassword(!showOldPassword)}
-                className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold"
+                className={eyeButtonClasses}
                 aria-label={showOldPassword ? 'Hide old password' : 'Show old password'}
               >
                 {showOldPassword ? <FaEyeSlash /> : <FaEye />}
@@ -98,7 +103,7 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
 
             {/* New Password */}
             <div className="relative">
-              <label className="block text-sm font-medium text-primary dark:text-gray-300 mb-1" htmlFor="newPassword">
+              <label className={labelClasses} htmlFor="newPassword">
                 New Password
               </label>
               <input
@@ -106,13 +111,13 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
                 type={showNewPassword ? 'text' : 'password'}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-gold focus:border-gold dark:bg-primary dark:text-gray-100"
+                className={inputClasses}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold"
+                className={eyeButtonClasses}
                 aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
               >
                 {showNewPassword ? <FaEyeSlash /> : <FaEye />}
@@ -134,7 +139,7 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
 
             {/* Confirm New Password */}
             <div className="relative">
-              <label className="block text-sm font-medium text-primary dark:text-gray-300 mb-1" htmlFor="confirmPassword">
+              <label className={labelClasses} htmlFor="confirmPassword">
                 Confirm New Password
               </label>
               <input
@@ -142,13 +147,13 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-gold focus:border-gold dark:bg-primary dark:text-gray-100"
+                className={inputClasses}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gold dark:hover:text-gold"
+                className={eyeButtonClasses}
                 aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
               >
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
@@ -160,13 +165,13 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-foreground bg-muted dark:text-dark-foreground dark:bg-dark-muted hover:bg-muted/80 dark:hover:bg-dark-muted/80 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-800 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary dark:text-dark-primary-foreground dark:bg-dark-primary hover:bg-primary/90 dark:hover:bg-dark-primary/90 rounded-lg transition-colors"
             >
               Save Changes
             </button>

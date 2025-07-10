@@ -112,16 +112,16 @@ const AuthForm = ({ type }) => { // Removed onSubmit
 
   return (
     <form
-      className="w-full max-w-sm mx-auto bg-white dark:bg-primary rounded-xl p-8 flex flex-col gap-4 dark:border-gold shadow-confident"
+      className="w-full max-w-sm mx-auto bg-card text-card-foreground dark:bg-dark-card dark:text-dark-card-foreground rounded-xl p-8 flex flex-col gap-4 border border-border dark:border-dark-border shadow-lg"
       onSubmit={handleSubmit}
       autoComplete="off"
     >
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gold mb-2 text-center font-poppins">
+      <h2 className="text-2xl font-semibold text-foreground dark:text-dark-foreground mb-2 text-center font-poppins">
         {type === 'signup' ? 'Create Account' : 'Sign In'}
       </h2>
       {/* Username input for both login and signup */}
       <input
-        className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-poppins"
+        className="border border-border dark:border-dark-border rounded px-4 py-2 focus:outline-none focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground font-poppins"
         type="text"
         name="username"
         placeholder="Username"
@@ -133,7 +133,7 @@ const AuthForm = ({ type }) => { // Removed onSubmit
       {type === 'signup' && (
         <div className="relative">
           <input
-            className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-poppins w-full"
+            className="border border-border dark:border-dark-border rounded px-4 py-2 focus:outline-none focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground font-poppins w-full"
             type="email"
             name="email"
             placeholder="Email"
@@ -149,7 +149,7 @@ const AuthForm = ({ type }) => { // Removed onSubmit
           {showEmailTooltip && (
             <div
               id="email-otp-tooltip"
-              className="absolute left-0 mt-2 w-72 bg-secondary text-text-primary text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border animate-fade-in"
+              className="absolute left-0 mt-2 w-72 bg-popover text-popover-foreground dark:bg-dark-popover dark:text-dark-popover-foreground text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border dark:border-dark-border animate-fade-in"
               role="tooltip"
             >
               Whenever you log in, a one-time passcode (OTP) will be sent to this email address for verification.
@@ -161,7 +161,7 @@ const AuthForm = ({ type }) => { // Removed onSubmit
       {type === 'signup' ? (
         <div className="relative">
           <input
-            className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-poppins w-full"
+            className="border border-border dark:border-dark-border rounded px-4 py-2 focus:outline-none focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground font-poppins w-full"
             type="password"
             name="password"
             placeholder="Password"
@@ -176,19 +176,19 @@ const AuthForm = ({ type }) => { // Removed onSubmit
           {showPasswordTooltip && (
             <div
               id="password-req-tooltip"
-              className="absolute left-0 mt-2 w-80 bg-secondary text-text-primary text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border animate-fade-in"
+              className="absolute left-0 mt-2 w-80 bg-popover text-popover-foreground dark:bg-dark-popover dark:text-dark-popover-foreground text-xs rounded-lg shadow-md px-4 py-3 z-10 border border-border dark:border-dark-border animate-fade-in"
               role="tooltip"
             >
-              <div className="mb-2 text-text-primary font-semibold">Password must contain:</div>
+              <div className="mb-2 text-foreground dark:text-dark-foreground font-semibold">Password must contain:</div>
               <ul className="space-y-1">
                 {passwordChecks.map((req, idx) => {
                   const passed = req.test(form.password);
                   return (
                     <li key={idx} className="flex items-center gap-2">
-                      <span className={passed ? 'text-success' : 'text-error'}>
+                      <span className={passed ? 'text-tn-green' : 'text-destructive dark:text-dark-destructive'}>
                         {passed ? '✔️' : '❌'}
                       </span>
-                      <span className={passed ? 'text-text-primary' : 'text-text-secondary'}>{req.label}</span>
+                      <span className={passed ? 'text-foreground dark:text-dark-foreground' : 'text-muted-foreground dark:text-dark-muted-foreground'}>{req.label}</span>
                     </li>
                   );
                 })}
@@ -198,7 +198,7 @@ const AuthForm = ({ type }) => { // Removed onSubmit
         </div>
       ) : (
         <input
-          className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-poppins"
+          className="border border-border dark:border-dark-border rounded px-4 py-2 focus:outline-none focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground font-poppins"
           type="password"
           name="password"
           placeholder="Password"
@@ -206,9 +206,9 @@ const AuthForm = ({ type }) => { // Removed onSubmit
           onChange={handleChange}
         />
       )}
-      {error && <div className="text-red-600 bg-red-50 dark:bg-secondary dark:text-gold rounded px-3 py-2 text-sm text-center font-poppins">{error}</div>}
+      {error && <div className="text-destructive-foreground bg-destructive dark:bg-dark-destructive dark:text-dark-destructive-foreground rounded px-3 py-2 text-sm text-center font-poppins">{error}</div>}
       <button
-        className="bg-blue-600 dark:bg-gold hover:bg-blue-700 dark:hover:bg-primary text-white dark:text-primary rounded py-2 font-semibold mt-2 transition-colors font-poppins dark:hover:text-gold w-full"
+        className="bg-primary dark:bg-dark-primary hover:bg-opacity-90 dark:hover:bg-opacity-90 text-primary-foreground dark:text-dark-primary-foreground rounded py-2 font-semibold mt-2 transition-colors font-poppins w-full"
         type="submit"
       >
         {type === 'signup' ? 'Sign Up' : 'Login'}
@@ -222,21 +222,21 @@ const AuthForm = ({ type }) => { // Removed onSubmit
               e.preventDefault();
               setShowForgotPasswordModal(true);
             }}
-            className="text-sm text-blue-600 dark:text-gold hover:underline focus:outline-none"
+            className="text-sm text-primary dark:text-dark-primary hover:underline focus:outline-none"
           >
             Forgot Master Password?
           </button>
         </div>
       )}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white dark:bg-primary rounded-xl shadow-confident border border-silver dark:border-gold p-8 max-w-sm w-full flex flex-col items-center">
-            <svg className="w-12 h-12 text-gold mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2l4-4" /></svg>
-            <h3 className="text-xl font-bold mb-2 text-primary dark:text-gold text-center">Sign Up Successful</h3>
-            <p className="mb-6 text-center text-gray-700 dark:text-gold">Your account has been created! You can now log in with your credentials.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-card dark:bg-dark-card rounded-xl shadow-lg border border-border dark:border-dark-border p-8 max-w-sm w-full flex flex-col items-center">
+            <svg className="w-12 h-12 text-tn-green mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2l4-4" /></svg>
+            <h3 className="text-xl font-bold mb-2 text-foreground dark:text-dark-foreground text-center">Sign Up Successful</h3>
+            <p className="mb-6 text-center text-muted-foreground dark:text-dark-muted-foreground">Your account has been created! You can now log in with your credentials.</p>
             <button
               onClick={handleModalClose}
-              className="px-6 py-2 rounded-xl bg-gold dark:bg-gold text-primary font-bold shadow-confident border border-silver dark:border-gold hover:bg-silver dark:hover:bg-primary hover:text-gold dark:hover:text-gold transition-colors"
+              className="px-6 py-2 rounded-xl bg-primary dark:bg-dark-primary text-primary-foreground dark:text-dark-primary-foreground font-bold shadow-md border border-transparent hover:bg-opacity-90 dark:hover:bg-opacity-90 transition-colors"
               autoFocus
             >
               Okay
@@ -245,23 +245,23 @@ const AuthForm = ({ type }) => { // Removed onSubmit
         </div>
       )}
       {showOtpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white dark:bg-primary rounded-xl shadow-confident border border-silver dark:border-gold p-8 max-w-sm w-full flex flex-col items-center">
-            <svg className="w-12 h-12 text-gold mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01" /></svg>
-            <h3 className="text-xl font-bold mb-2 text-primary dark:text-gold text-center">Enter OTP</h3>
-            <p className="mb-4 text-center text-gray-700 dark:text-gold">A one-time passcode (OTP) has been sent to your email. Please enter it below to continue.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-card dark:bg-dark-card rounded-xl shadow-lg border border-border dark:border-dark-border p-8 max-w-sm w-full flex flex-col items-center">
+            <svg className="w-12 h-12 text-primary dark:text-dark-primary mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01" /></svg>
+            <h3 className="text-xl font-bold mb-2 text-foreground dark:text-dark-foreground text-center">Enter OTP</h3>
+            <p className="mb-4 text-center text-muted-foreground dark:text-dark-muted-foreground">A one-time passcode (OTP) has been sent to your email. Please enter it below to continue.</p>
             <input
               type="text"
               value={otp}
               onChange={handleOtpChange}
               maxLength={6}
-              className="mb-4 px-4 py-2 rounded border border-silver dark:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-poppins w-full text-center focus:outline-none focus:border-gold dark:focus:border-gold"
+              className="mb-4 px-4 py-2 rounded border border-border dark:border-dark-border bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground font-poppins w-full text-center focus:outline-none focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring"
               placeholder="Enter OTP"
               autoFocus
             />
             <button
               onClick={handleOtpVerify}
-              className="px-6 py-2 rounded-xl bg-gold dark:bg-gold text-primary font-bold shadow-confident border border-silver dark:border-gold hover:bg-silver dark:hover:bg-primary hover:text-gold dark:hover:text-gold transition-colors"
+              className="px-6 py-2 rounded-xl bg-primary dark:bg-dark-primary text-primary-foreground dark:text-dark-primary-foreground font-bold shadow-md border border-transparent hover:bg-opacity-90 dark:hover:bg-opacity-90 transition-colors"
             >
               Verify
             </button>

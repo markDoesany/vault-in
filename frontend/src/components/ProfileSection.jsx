@@ -19,7 +19,7 @@ export default function ProfileSection({
     <>
       {/* Floating Action Button (FAB) */}
       <button
-        className="fixed top-6 left-6 z-40 bg-white dark:bg-tn-card text-tn-blue dark:text-tn-blue rounded-full shadow-lg p-3 text-2xl border border-gray-200 dark:border-tn-border hover:bg-gray-100 dark:hover:bg-tn-comment transition-colors"
+        className="fixed top-6 left-6 z-40 bg-card dark:bg-dark-card text-primary dark:text-dark-primary rounded-full shadow-lg p-3 text-2xl border border-border dark:border-dark-border hover:bg-muted dark:hover:bg-dark-muted transition-colors"
         onClick={() => setProfileOpen(true)}
         aria-label="Open profile"
         type="button"
@@ -29,26 +29,26 @@ export default function ProfileSection({
       {/* Profile Modal */}
       {profileOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 dark:bg-opacity-70"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 dark:bg-opacity-70" // Consistent backdrop
           onClick={() => setProfileOpen(false)}
         >
           <div
-            className="relative bg-white dark:bg-tn-card border border-gray-200 dark:border-tn-border rounded-lg shadow-xl p-6 w-[90vw] max-w-xs flex flex-col items-center"
+            className="relative bg-card text-card-foreground dark:bg-dark-card dark:text-dark-card-foreground border border-border dark:border-dark-border rounded-lg shadow-xl p-6 w-[90vw] max-w-xs flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-3 right-3 text-xl text-gray-400 dark:text-tn-comment hover:text-gray-600 dark:hover:text-tn-fg focus:outline-none"
+              className="absolute top-3 right-3 text-xl text-muted-foreground hover:text-foreground dark:text-dark-muted-foreground dark:hover:text-dark-foreground focus:outline-none"
               onClick={() => setProfileOpen(false)}
               type="button"
               aria-label="Close profile modal"
             >
               <FaTimes />
             </button>
-            <FaUserCircle className="text-5xl text-tn-blue mb-3" />
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-tn-fg mb-4">Account</h2>
+            <FaUserCircle className="text-5xl text-primary dark:text-dark-primary mb-3" />
+            <h2 className="text-xl font-semibold text-foreground dark:text-dark-foreground mb-4">Account</h2>
 
             <button
-              className="w-full mt-2 px-4 py-2.5 rounded-md bg-gray-100 dark:bg-tn-comment text-gray-700 dark:text-tn-fg font-medium hover:bg-gray-200 dark:hover:bg-tn-border transition-colors text-sm"
+              className="btn btn-secondary w-full mt-2 text-sm" // Using btn-secondary for a less prominent action
               onClick={() => {
                 openChangeMasterPasswordModal();
                 setProfileOpen(false);
@@ -59,7 +59,7 @@ export default function ProfileSection({
             </button>
 
             <button
-              className="w-full mt-3 px-4 py-2.5 rounded-md bg-gray-100 dark:bg-tn-comment text-gray-700 dark:text-tn-fg font-medium hover:bg-gray-200 dark:hover:bg-tn-border transition-colors text-sm flex items-center justify-center"
+              className="btn btn-secondary w-full mt-3 text-sm flex items-center justify-center" // Using btn-secondary
               onClick={() => {
                 toggleTheme();
                 // setProfileOpen(false); // Optionally close modal on theme change
@@ -71,7 +71,7 @@ export default function ProfileSection({
             </button>
 
             <button
-              className="w-full mt-3 px-4 py-2.5 rounded-md bg-tn-red hover:bg-opacity-80 text-white font-medium shadow-sm transition-colors text-sm"
+              className="btn btn-destructive w-full mt-3 text-sm" // Using btn-destructive for logout
               onClick={handleLogout}
               type="button"
             >
