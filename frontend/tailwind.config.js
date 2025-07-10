@@ -63,11 +63,11 @@ module.exports = {
         'dark-secondary': 'var(--tn-comment)',
         'dark-secondary-foreground': 'var(--tn-fg)',
         'dark-muted': 'var(--tn-border)',
-        'dark-muted-foreground': 'var(--tn-comment)',
+        'dark-muted-foreground': '#a9b1d6', // Brighter muted text for better visibility
         'dark-accent': 'var(--tn-purple)',
         'dark-accent-foreground': 'var(--tn-bg)',
         'dark-destructive': 'var(--tn-red)',
-        'dark-destructive-foreground': 'var(--tn-bg)',
+        'dark-destructive-foreground': 'var(--tn-fg)', // Brighter text on destructive buttons
         'dark-border': 'var(--tn-border)',
         'dark-input': 'var(--tn-card)', // Input bg in dark mode
         'dark-ring': 'var(--tn-blue)',
