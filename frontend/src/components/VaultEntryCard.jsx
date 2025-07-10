@@ -28,73 +28,73 @@ const VaultEntryCard = ({ entry, onCopy, onEdit, onDelete }) => {
   }, [entry.updatedAt]);
 
   return (
-    <div className="relative aspect-square w-full">
+    <div className="relative w-full"> {/* Removed aspect-square to allow content to define height */}
       {/* Timestamp as a tab above the card */}
       {formatLastUpdated && (
-        <div className="absolute -top-5 right-2 flex items-center text-xs text-gray-500 dark:text-gray-300 bg-white dark:bg-secondary px-2 py-0.5 rounded-t border-l border-r border-t border-silver dark:border-gold z-10">
-          <FaClock className="mr-1" size={10} />
+        <div className="absolute -top-4 right-2 flex items-center text-xs text-gray-500 dark:text-tn-comment bg-white dark:bg-tn-card px-2 py-0.5 rounded-t border-l border-r border-t border-gray-300 dark:border-tn-border z-10 shadow-sm">
+          <FaClock className="mr-1.5" size={10} />
           {formatLastUpdated}
         </div>
       )}
       
-      <div className="bg-white dark:bg-secondary rounded-xl shadow-confident border border-silver dark:border-gold p-4 flex flex-col h-full">
-        <div className="flex flex-col flex-1">
-          <div className="flex flex-col gap-2">
-            <span className="font-bold text-lg text-primary dark:text-gold">{entry.platform}</span>
-            <span className="text-gray-700 dark:text-gold font-mono">{entry.username}</span>
+      <div className="bg-white dark:bg-tn-card rounded-lg shadow-md dark:shadow-lg border border-gray-200 dark:border-tn-border p-5 flex flex-col h-full transition-all duration-200 ease-in-out hover:shadow-xl dark:hover:border-tn-blue">
+        <div className="flex flex-col flex-1 mb-4"> {/* Added mb-4 for spacing before buttons */}
+          <div className="flex flex-col gap-1"> {/* Reduced gap for tighter heading */}
+            <span className="font-semibold text-lg sm:text-xl text-gray-800 dark:text-tn-blue">{entry.platform}</span>
+            <span className="text-gray-600 dark:text-tn-fg font-mono text-sm">{entry.username}</span>
           </div>
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-3">
             <input
               type={showPassword ? 'text' : 'password'}
               value={entry.password}
               readOnly
-              className="w-32 px-2 py-1 rounded border border-silver dark:border-gold bg-gray-50 dark:bg-primary text-primary dark:text-gold font-mono focus:outline-none"
+              className="flex-grow px-3 py-1.5 rounded border border-gray-300 dark:border-tn-border bg-gray-50 dark:bg-tn-bg text-gray-700 dark:text-tn-fg font-mono text-sm focus:outline-none focus:ring-1 focus:ring-tn-blue dark:focus:border-tn-blue"
             />
             <button
               type="button"
-              className="p-1 ml-2 focus:outline-none"
+              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-tn-comment focus:outline-none focus:ring-1 focus:ring-tn-blue"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
-                <FaEyeSlash className="text-lg text-gold dark:text-gold" />
+                <FaEyeSlash className="text-lg text-gray-600 dark:text-tn-cyan" />
               ) : (
-                <FaEye className="text-lg text-gold dark:text-gold" />
+                <FaEye className="text-lg text-gray-600 dark:text-tn-cyan" />
               )}
             </button>
             <button
               type="button"
-              className="p-1 ml-2 focus:outline-none"
+              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-tn-comment focus:outline-none focus:ring-1 focus:ring-tn-blue"
               onClick={handleCopy}
               aria-label="Copy password"
             >
-              <FaRegClipboard className="text-lg text-gold dark:text-gold" />
+              <FaRegClipboard className="text-lg text-gray-600 dark:text-tn-green" />
             </button>
           </div>
           {entry.tags && entry.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {entry.tags.map((tag) => (
-                <span key={tag} className="px-2 py-0.5 rounded bg-silver dark:bg-primary text-xs text-primary dark:text-gold font-semibold border border-gold dark:border-gold">{tag}</span>
+                <span key={tag} className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-tn-comment text-xs text-gray-700 dark:text-tn-fg font-medium border border-gray-200 dark:border-tn-border">{tag}</span>
               ))}
             </div>
           )}
         </div>
-        <div className="flex justify-end gap-2 mt-2">
+        <div className="flex justify-end gap-2.5 mt-auto"> {/* mt-auto to push buttons to bottom if card height varies */}
           <button
             type="button"
-            className="p-1 focus:outline-none"
+            className="px-3.5 py-1.5 text-sm rounded font-medium bg-tn-blue hover:bg-opacity-80 text-tn-bg dark:bg-tn-blue dark:hover:bg-opacity-90 dark:text-tn-bg focus:outline-none focus:ring-2 focus:ring-tn-blue focus:ring-opacity-50 flex items-center shadow-sm transition-colors"
             onClick={() => onEdit && onEdit(entry)}
             aria-label="Edit entry"
           >
-            <FaEdit className="text-base text-silver dark:text-gold" />
+            <FaEdit className="text-sm mr-1.5" /> Edit
           </button>
           <button
             type="button"
-            className="p-1 focus:outline-none"
+            className="px-3.5 py-1.5 text-sm rounded font-medium bg-tn-red hover:bg-opacity-80 text-tn-bg dark:bg-tn-red dark:hover:bg-opacity-90 dark:text-tn-bg focus:outline-none focus:ring-2 focus:ring-tn-red focus:ring-opacity-50 flex items-center shadow-sm transition-colors"
             onClick={() => onDelete && onDelete(entry)}
             aria-label="Delete entry"
           >
-            <FaTrash className="text-base text-red-500 dark:text-red-400" />
+            <FaTrash className="text-sm mr-1.5" /> Delete
           </button>
         </div>
       </div>
