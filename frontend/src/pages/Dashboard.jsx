@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaUserCircle, FaPlusCircle, FaTimes } from 'react-icons/fa';
+// Removed unused icons: FaCheckCircle, FaTimesCircle, FaUserCircle, FaPlusCircle, FaTimes
 import PasswordSettingsModal from '../components/PasswordSettingsModal';
 import SessionTimer from '../components/SessionTimer';
 import SummaryStats from '../components/SummaryStats';
@@ -11,38 +11,17 @@ import EditEntryModal from '../components/EditEntryModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import CopySuccessModal from '../components/CopySuccessModal';
 import SessionLogoutModal from '../components/SessionLogoutModal';
-import ChangeMasterPasswordModal from '../components/ChangeMasterPasswordModal'; // Import the new modal
+import ChangeMasterPasswordModal from '../components/ChangeMasterPasswordModal';
 import { useNavigate } from 'react-router-dom';
+import { getVaultEntries, addVaultEntry, updateVaultEntry, deleteVaultEntry } from '../services/api'; // Import API functions
 
-const MOCK_ENTRIES = [
-  {
-    id: 1,
-    platform: 'Facebook',
-    username: 'john.doe',
-    password: 'hunter2',
-    tags: ['Social'],
-    updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 days ago
-  },
-  {
-    id: 2,
-    platform: 'Chase Bank',
-    username: 'jane.finance',
-    password: 'Super$ecret1',
-    tags: ['Finance'],
-    updatedAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-  },
-  {
-    id: 3,
-    platform: 'Gmail',
-    username: 'clint@email.com',
-    password: 'EmailPass!2024',
-    tags: ['Personal', 'Email'],
-    updatedAt: new Date().toISOString(), // Now
-  },
-];
+// MOCK_ENTRIES is removed as data will be fetched from API
 
 const Dashboard = () => {
-  const [entries, setEntries] = useState(MOCK_ENTRIES);
+  const [entries, setEntries] = useState([]); // Initialize with empty array
+  const [isLoadingEntries, setIsLoadingEntries] = useState(true); // Loading state for entries
+  const [errorEntries, setErrorEntries] = useState(''); // Error state for entries
+
   const [profileOpen, setProfileOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [newEntry, setNewEntry] = useState({
