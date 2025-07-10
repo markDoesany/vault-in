@@ -12,10 +12,10 @@ const AddEntryModal = ({
   showPasswordTooltip,
   setShowPasswordTooltip,
   generatePassword,
-  passwordSettings,
-  setPasswordSettings,
-  showPasswordSettings,
-  setShowPasswordSettings,
+  // passwordSettings, // Removed as per lint error
+  // setPasswordSettings, // Removed as per lint error
+  // showPasswordSettings, // Removed as per lint error
+  setShowPasswordSettings, // This is used to open the settings modal
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);

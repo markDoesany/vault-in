@@ -11,6 +11,7 @@ import EditEntryModal from '../components/EditEntryModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import CopySuccessModal from '../components/CopySuccessModal';
 import SessionLogoutModal from '../components/SessionLogoutModal';
+import ChangeMasterPasswordModal from '../components/ChangeMasterPasswordModal'; // Import the new modal
 import { useNavigate } from 'react-router-dom';
 
 const MOCK_ENTRIES = [
@@ -51,7 +52,7 @@ const Dashboard = () => {
     notes: '',
     tags: '', // store as comma-separated string for input
   });
-  const [passwordStrength, setPasswordStrength] = useState('');
+  // const [passwordStrength, setPasswordStrength] = useState(''); // Removed unused variable
   const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
   const [addEntryError, setAddEntryError] = useState('');
 
@@ -129,7 +130,7 @@ const Dashboard = () => {
     
     // Update the password field and strength
     setNewEntry(prev => ({ ...prev, password }));
-    setPasswordStrength(checkStrength(password));
+    // setPasswordStrength(checkStrength(password)); // setPasswordStrength was removed
   };
   // Password generation settings
   const [passwordSettings, setPasswordSettings] = useState({
@@ -165,6 +166,7 @@ const Dashboard = () => {
   const [sessionTimeLeft, setSessionTimeLeft] = useState(SESSION_DURATION);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutCountdown, setLogoutCountdown] = useState(3);
+  const [isChangeMasterPasswordModalOpen, setIsChangeMasterPasswordModalOpen] = useState(false); // State for the new modal
 
   useEffect(() => {
     let timer;
@@ -198,7 +200,7 @@ const Dashboard = () => {
     if (!stored || parseInt(stored, 10) < Date.now()) {
       localStorage.setItem('vault_session_expiry', Date.now() + SESSION_DURATION * 1000);
     }
-  }, []);
+  }, [SESSION_DURATION]); // Added SESSION_DURATION to dependency array
 
   useEffect(() => {
     let logoutTimer;
@@ -242,7 +244,7 @@ const Dashboard = () => {
     },
   ];
 
-  const allPasswordValid = passwordChecks.every(check => check.test(newEntry.password));
+  // const allPasswordValid = passwordChecks.every(check => check.test(newEntry.password)); // Removed unused variable
 
   // Placeholder handlers
   const handleCopy = (entry) => {
@@ -268,28 +270,28 @@ const Dashboard = () => {
   const openAddModal = () => {
     setAddModalOpen(true);
     setNewEntry({ platform: '', username: '', password: '', notes: '', tags: '' });
-    setPasswordStrength('');
+    // setPasswordStrength(''); // Removed as setPasswordStrength is not defined
   };
   const closeAddModal = () => setAddModalOpen(false);
 
   const handleNewEntryChange = e => {
     const { name, value } = e.target;
     setNewEntry(prev => ({ ...prev, [name]: value }));
-    if (name === 'password') setPasswordStrength(checkStrength(value));
+    // if (name === 'password') setPasswordStrength(checkStrength(value)); // setPasswordStrength was removed
   };
 
-  function checkStrength(pw) {
-    if (!pw) return '';
-    let score = 0;
-    if (pw.length >= 8) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[a-z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    if (score >= 5) return 'Strong';
-    if (score >= 3) return 'Medium';
-    return 'Weak';
-  }
+  // function checkStrength(pw) { // Removed as it's no longer used
+  //   if (!pw) return '';
+  //   let score = 0;
+  //   if (pw.length >= 8) score++;
+  //   if (/[A-Z]/.test(pw)) score++;
+  //   if (/[a-z]/.test(pw)) score++;
+  //   if (/[0-9]/.test(pw)) score++;
+  //   if (/[^A-Za-z0-9]/.test(pw)) score++;
+  //   if (score >= 5) return 'Strong';
+  //   if (score >= 3) return 'Medium';
+  //   return 'Weak';
+  // }
 
   const handleAddEntry = (e) => {
     e.preventDefault();
@@ -377,7 +379,11 @@ const Dashboard = () => {
       <SummaryStats entries={entries} lastActivity={sessionTimeLeft} />
       <SearchAddBar openAddModal={openAddModal} />
       <VaultEntriesList entries={entries} onCopy={handleCopy} onEdit={handleEdit} onDelete={handleDelete} />
-      <ProfileSection profileOpen={profileOpen} setProfileOpen={setProfileOpen} />
+      <ProfileSection
+        profileOpen={profileOpen}
+        setProfileOpen={setProfileOpen}
+        openChangeMasterPasswordModal={() => setIsChangeMasterPasswordModalOpen(true)} // Pass handler to open modal
+      />
       <AddEntryModal
         addModalOpen={addModalOpen}
         closeAddModal={closeAddModal}
@@ -419,6 +425,10 @@ const Dashboard = () => {
       />
       <CopySuccessModal showCopyModal={showCopyModal} />
       <SessionLogoutModal showLogoutModal={showLogoutModal} logoutCountdown={logoutCountdown} />
+      <ChangeMasterPasswordModal
+        isOpen={isChangeMasterPasswordModalOpen}
+        onClose={() => setIsChangeMasterPasswordModalOpen(false)}
+      />
     </div>
   );
 };
