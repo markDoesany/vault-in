@@ -6,8 +6,10 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [formError, setFormError] = useState(''); // Renamed from error to avoid confusion
   const [isResetting, setIsResetting] = useState(false);
+  const [resetStatus, setResetStatus] = useState(null); // null, 'success', 'error'
+  const [resetMessage, setResetMessage] = useState('');
   
   // Password requirements checkers - same as in AuthForm
   const passwordChecks = useMemo(() => [
@@ -40,25 +42,33 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setResetStatus(null);
+    setResetMessage('');
     
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setFormError('Passwords do not match');
       return;
     }
     
     if (!allRequirementsMet) {
-      setError('Please ensure all password requirements are met');
+      setFormError('Please ensure all password requirements are met');
       return;
     }
     
-    setError('');
+    setFormError('');
     setIsResetting(true);
     
     try {
       await onResetPassword(password);
-      // The parent component will handle the navigation after successful reset
+      setResetStatus('success');
+      setResetMessage('Master password has been reset successfully!');
+      // Clear form fields on success
+      setPassword('');
+      setConfirmPassword('');
     } catch (err) {
-      setError(err.message || 'Failed to reset password');
+      setResetStatus('error');
+      setResetMessage(err.message || 'Failed to reset password. Please try again.');
+      setFormError(err.message || 'Failed to reset password. Please try again.'); // Keep formError for inline display if needed
     } finally {
       setIsResetting(false);
     }
@@ -68,37 +78,61 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-secondary rounded-xl p-6 w-full max-w-md relative">
+      <div className="bg-background border border-border shadow-lg rounded-lg p-6 w-full max-w-md relative">
         <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          disabled={isResetting}
+          onClick={() => {
+            onClose();
+            setResetStatus(null); // Reset status when closing manually
+            setFormError('');
+            setPassword('');
+            setConfirmPassword('');
+          }}
+          className="absolute top-3 right-3 text-text-secondary hover:text-text-primary"
+          disabled={isResetting && resetStatus !== 'success'} // Disable close if processing, unless it's success
         >
-          ✕
+          <FaTimes size={20} />
         </button>
         
         <div className="flex items-center mb-4">
-          <FaExclamationTriangle className="text-yellow-500 mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gold">Reset Master Password</h3>
+          {/* Using a theme-consistent icon */}
+          <FaExclamationTriangle className="text-error mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-text-primary">Reset Master Password</h3>
         </div>
         
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 mb-4">
-          <p className="text-yellow-700 dark:text-yellow-300 text-sm">
+        {/* Warning Message - Adjusted styling */}
+        <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded">
+          <p className="text-error text-sm">
             <strong>Warning:</strong> Resetting your master password will permanently delete all your vault data. 
             This action cannot be undone.
           </p>
         </div>
         
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 p-4 mb-4">
-            <p className="text-red-700 dark:text-red-300 text-sm">{error}</p>
+        {/* Overall Reset Status Message Area */}
+        {resetStatus === 'success' && (
+          <div className="bg-green-50 border-l-4 border-success p-4 mb-4 rounded flex items-center">
+            <FaCheck className="text-success mr-3 flex-shrink-0" size={20} />
+            <p className="text-success text-sm font-semibold">{resetMessage}</p>
+          </div>
+        )}
+        {resetStatus === 'error' && !formError && ( // Show general error if not specific formError
+          <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded flex items-center">
+            <FaTimes className="text-error mr-3 flex-shrink-0" size={20} />
+            <p className="text-error text-sm font-semibold">{resetMessage}</p>
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              New Master Password
+        {/* Form Error (e.g. passwords don't match) */}
+        {formError && !resetStatus && ( // Only show formError if no reset attempt status is active
+          <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded">
+            <p className="text-error text-sm">{formError}</p>
+          </div>
+        )}
+
+        {/* Hide form on success, otherwise show */}
+        {resetStatus !== 'success' && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                New Master Password
             </label>
             <div className="relative">
               <input
@@ -106,35 +140,36 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gold focus:border-gold dark:bg-gray-700 dark:text-white"
+                className="w-full" // Tailwind class from index.css will apply
                 required
                 minLength={8}
                 autoComplete="new-password"
+                placeholder="Enter new password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-secondary hover:text-text-primary"
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
             </div>
             
-            {/* Password Requirements - Only show if not all requirements are met */}
-            {!allRequirementsMet && (
-              <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                <p className="font-medium mb-1">Password must contain:</p>
+            {/* Password Requirements - Adjusted styling */}
+            {password && !allRequirementsMet && ( // Show only if password has input and not all met
+              <div className="mt-2 text-xs">
+                <p className="form-label text-xs mb-1">Password must contain:</p>
                 <ul className="space-y-1">
                   {passwordChecks.map((check, index) => {
                     const isMet = check.test(password);
                     return (
-                      <li key={index} className={`flex items-center ${isMet ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                      <li key={index} className={`flex items-center ${isMet ? 'text-success' : 'text-error'}`}>
                         {isMet ? (
-                          <FaCheck className="mr-1.5 flex-shrink-0" size={10} />
+                          <FaCheck className="mr-1.5 flex-shrink-0" size={12} />
                         ) : (
-                          <FaTimes className="mr-1.5 flex-shrink-0" size={10} />
+                          <FaTimes className="mr-1.5 flex-shrink-0" size={12} />
                         )}
-                        {check.label}
+                        <span className="text-text-secondary">{check.label}</span>
                       </li>
                     );
                   })}
@@ -144,7 +179,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
           </div>
           
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="confirmPassword" className="form-label">
               Confirm New Password
             </label>
             <div className="relative">
@@ -153,17 +188,18 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gold focus:border-gold dark:bg-gray-700 dark:text-white"
+                className="w-full" // Tailwind class from index.css will apply
                 required
                 minLength={8}
                 autoComplete="new-password"
+                placeholder="Confirm new password"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-secondary hover:text-text-primary"
               >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
             </div>
           </div>
@@ -171,21 +207,46 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
           <div className="mt-6 flex justify-end space-x-3">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                setResetStatus(null);
+                setFormError('');
+                setPassword('');
+                setConfirmPassword('');
+              }}
               disabled={isResetting}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold disabled:opacity-50"
+              className="btn btn-secondary" // Using new button styles
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isResetting || !password || !confirmPassword || !allRequirementsMet}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+              className="btn btn-primary bg-error hover:bg-red-700 text-background border-error hover:border-red-700" // Base .btn, but with error colors for emphasis
             >
               {isResetting ? 'Resetting...' : 'Reset Password'}
             </button>
           </div>
         </form>
+        )}
+        {/* Show only close button on success */}
+        {resetStatus === 'success' && (
+          <div className="mt-6 flex justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                setResetStatus(null); // Reset for next time
+                setFormError('');
+                setPassword('');
+                setConfirmPassword('');
+              }}
+              className="btn btn-primary"
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
