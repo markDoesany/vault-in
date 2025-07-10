@@ -13,30 +13,35 @@ const EditEntryModal = ({
   setShowPasswordTooltip,
 }) => {
   if (!editModalOpen) return null;
+
+  const inputBaseClasses = "border rounded px-4 py-2 focus:outline-none font-poppins w-full";
+  const themedInputClasses = `${inputBaseClasses} border-border dark:border-dark-border bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring`;
+  const themedTextareaClasses = `${themedInputClasses} min-h-[60px]`;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={closeEditModal}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 dark:bg-opacity-70 p-4" onClick={closeEditModal}>
       <form
-        className="relative bg-white dark:bg-primary rounded-2xl shadow-confident border border-silver dark:border-gold p-6 w-[95vw] max-w-md flex flex-col gap-4"
+        className="relative bg-card text-card-foreground dark:bg-dark-card dark:text-dark-card-foreground rounded-2xl shadow-xl border border-border dark:border-dark-border p-6 w-[95vw] max-w-md flex flex-col gap-4"
         onClick={e => e.stopPropagation()}
         onSubmit={handleEditEntrySave}
         autoComplete="off"
       >
         <button
-          className="absolute top-2 right-2 text-xl text-gray-400 hover:text-gold dark:hover:text-gold focus:outline-none"
+          className="absolute top-3 right-3 text-muted-foreground hover:text-foreground dark:text-dark-muted-foreground dark:hover:text-dark-foreground focus:outline-none"
           onClick={closeEditModal}
           type="button"
           aria-label="Close edit entry modal"
         >
-          <FaTimes />
+          <FaTimes size={20}/>
         </button>
-        <h2 className="text-xl font-bold text-primary dark:text-gold text-center mb-2">Edit Vault Entry</h2>
+        <h2 className="text-xl font-bold text-foreground dark:text-dark-foreground text-center mb-2">Edit Vault Entry</h2>
         {editEntryError && (
-          <div className="w-full text-center bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-700 rounded p-2 mb-2">
+          <div className="w-full text-center bg-destructive/10 text-destructive dark:text-dark-destructive border border-destructive dark:border-dark-destructive rounded p-2 mb-2 text-sm">
             {editEntryError}
           </div>
         )}
         <input
-          className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-secondary text-primary dark:text-gold font-poppins"
+          className={themedInputClasses}
           type="text"
           name="platform"
           placeholder="Platform Name"
@@ -46,7 +51,7 @@ const EditEntryModal = ({
           autoFocus
         />
         <input
-          className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-secondary text-primary dark:text-gold font-poppins"
+          className={themedInputClasses}
           type="text"
           name="username"
           placeholder="Username or Email"
@@ -56,7 +61,7 @@ const EditEntryModal = ({
         />
         <div className="flex flex-col gap-1 relative">
           <input
-            className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-secondary text-primary dark:text-gold font-poppins"
+            className={themedInputClasses}
             type="password"
             name="password"
             placeholder="Password"
@@ -70,20 +75,20 @@ const EditEntryModal = ({
           {showPasswordTooltip && !passwordChecks.every(check => check.test(editEntry.password)) && (
             <div
               id="edit-password-tooltip"
-              className="absolute left-0 top-12 z-20 w-full bg-white dark:bg-secondary border border-silver dark:border-gold rounded-lg shadow-lg p-4 text-xs text-primary dark:text-gold"
+              className="absolute left-0 top-full mt-1 z-20 w-full bg-popover text-popover-foreground dark:bg-dark-popover dark:text-dark-popover-foreground rounded-lg shadow-md p-3 text-xs border border-border dark:border-dark-border"
             >
-              <div className="font-semibold mb-2 text-gold">Password requirements:</div>
-              <ul className="space-y-1">
+              <div className="font-semibold mb-1 text-foreground dark:text-dark-foreground">Password requirements:</div>
+              <ul className="space-y-0.5">
                 {passwordChecks.map((check, idx) => {
                   const passed = check.test(editEntry.password);
                   return (
-                    <li key={idx} className="flex items-center gap-2">
+                    <li key={idx} className="flex items-center gap-1.5">
                       {passed ? (
-                        <FaCheckCircle className="text-green-600 dark:text-green-400" />
+                        <FaCheckCircle className="text-tn-green" size={14}/>
                       ) : (
-                        <FaTimesCircle className="text-red-600 dark:text-red-400" />
+                        <FaTimesCircle className="text-destructive dark:text-dark-destructive" size={14}/>
                       )}
-                      <span className={passed ? 'text-green-600 dark:text-green-400' : ''}>{check.label}</span>
+                      <span className={passed ? 'text-foreground dark:text-dark-foreground' : 'text-muted-foreground dark:text-dark-muted-foreground'}>{check.label}</span>
                     </li>
                   );
                 })}
@@ -92,7 +97,7 @@ const EditEntryModal = ({
           )}
         </div>
         <input
-          className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-secondary text-primary dark:text-gold font-poppins"
+          className={themedInputClasses}
           type="text"
           name="tags"
           placeholder="Tags (comma separated, e.g. Finance, Email)"
@@ -100,7 +105,7 @@ const EditEntryModal = ({
           onChange={handleEditEntryChange}
         />
         <textarea
-          className="border border-gray-200 dark:border-gold rounded px-4 py-2 focus:outline-none focus:border-gold dark:focus:border-gold bg-gray-50 dark:bg-secondary text-primary dark:text-gold font-poppins min-h-[60px]"
+          className={themedTextareaClasses}
           name="notes"
           placeholder="Optional Notes"
           value={editEntry.notes}
@@ -109,8 +114,8 @@ const EditEntryModal = ({
         />
         <button
           type="submit"
-          className="w-full mt-2 px-4 py-2 rounded-xl bg-gold dark:bg-gold text-primary font-bold shadow-confident border border-silver dark:border-gold hover:bg-silver dark:hover:bg-primary hover:text-gold dark:hover:text-gold transition-colors"
-          disabled={!editEntry.platform || !editEntry.username || !passwordChecks.every(check => check.test(editEntry.password))}
+          className="btn btn-primary w-full mt-2" // Use new button styles
+          disabled={!editEntry.platform || !editEntry.username || !editEntry.password || !passwordChecks.every(check => check.test(editEntry.password))}
         >
           Save Changes
         </button>

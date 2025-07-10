@@ -374,7 +374,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background dark:bg-primary font-poppins flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-dark-background text-foreground dark:text-dark-foreground font-poppins flex flex-col">
       <SessionTimer sessionTimeLeft={sessionTimeLeft} />
       <SummaryStats entries={entries} lastActivity={sessionTimeLeft} />
       <SearchAddBar openAddModal={openAddModal} />

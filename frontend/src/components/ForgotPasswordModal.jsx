@@ -76,9 +76,13 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
 
   if (!isOpen) return null;
 
+  const inputBaseClasses = "border rounded px-4 py-2 focus:outline-none font-poppins w-full";
+  const themedInputClasses = `${inputBaseClasses} border-border dark:border-dark-border bg-input dark:bg-dark-input text-foreground dark:text-dark-foreground placeholder-muted-foreground dark:placeholder-dark-muted-foreground focus:border-ring dark:focus:border-dark-ring focus:ring-1 focus:ring-ring dark:focus:ring-dark-ring`;
+
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background border border-border shadow-lg rounded-lg p-6 w-full max-w-md relative">
+    <div className="fixed inset-0 bg-black bg-opacity-60 dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
+      <div className="bg-card text-card-foreground dark:bg-dark-card dark:text-dark-card-foreground border border-border dark:border-dark-border shadow-xl rounded-lg p-6 w-full max-w-md relative">
         <button
           onClick={() => {
             onClose();
@@ -87,52 +91,47 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
             setPassword('');
             setConfirmPassword('');
           }}
-          className="absolute top-3 right-3 text-text-secondary hover:text-text-primary"
+          className="absolute top-3 right-3 text-muted-foreground hover:text-foreground dark:text-dark-muted-foreground dark:hover:text-dark-foreground"
           disabled={isResetting && resetStatus !== 'success'} // Disable close if processing, unless it's success
         >
           <FaTimes size={20} />
         </button>
         
         <div className="flex items-center mb-4">
-          {/* Using a theme-consistent icon */}
-          <FaExclamationTriangle className="text-error mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-text-primary">Reset Master Password</h3>
+          <FaExclamationTriangle className="text-destructive dark:text-dark-destructive mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-foreground dark:text-dark-foreground">Reset Master Password</h3>
         </div>
         
-        {/* Warning Message - Adjusted styling */}
-        <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded">
-          <p className="text-error text-sm">
+        <div className="bg-destructive/10 border-l-4 border-destructive dark:border-dark-destructive p-4 mb-4 rounded">
+          <p className="text-destructive dark:text-dark-destructive text-sm">
             <strong>Warning:</strong> Resetting your master password will permanently delete all your vault data. 
             This action cannot be undone.
           </p>
         </div>
         
-        {/* Overall Reset Status Message Area */}
         {resetStatus === 'success' && (
-          <div className="bg-green-50 border-l-4 border-success p-4 mb-4 rounded flex items-center">
-            <FaCheck className="text-success mr-3 flex-shrink-0" size={20} />
-            <p className="text-success text-sm font-semibold">{resetMessage}</p>
+          <div className="bg-tn-green/10 border-l-4 border-tn-green p-4 mb-4 rounded flex items-center">
+            <FaCheck className="text-tn-green mr-3 flex-shrink-0" size={20} />
+            <p className="text-tn-green text-sm font-semibold">{resetMessage}</p>
           </div>
         )}
-        {resetStatus === 'error' && !formError && ( // Show general error if not specific formError
-          <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded flex items-center">
-            <FaTimes className="text-error mr-3 flex-shrink-0" size={20} />
-            <p className="text-error text-sm font-semibold">{resetMessage}</p>
+        {resetStatus === 'error' && !formError && (
+          <div className="bg-destructive/10 border-l-4 border-destructive dark:border-dark-destructive p-4 mb-4 rounded flex items-center">
+            <FaTimes className="text-destructive dark:text-dark-destructive mr-3 flex-shrink-0" size={20} />
+            <p className="text-destructive dark:text-dark-destructive text-sm font-semibold">{resetMessage}</p>
           </div>
         )}
         
-        {/* Form Error (e.g. passwords don't match) */}
-        {formError && !resetStatus && ( // Only show formError if no reset attempt status is active
-          <div className="bg-red-50 border-l-4 border-error p-4 mb-4 rounded">
-            <p className="text-error text-sm">{formError}</p>
+        {formError && !resetStatus && (
+          <div className="bg-destructive/10 border-l-4 border-destructive dark:border-dark-destructive p-4 mb-4 rounded">
+            <p className="text-destructive dark:text-dark-destructive text-sm">{formError}</p>
           </div>
         )}
 
-        {/* Hide form on success, otherwise show */}
         {resetStatus !== 'success' && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="newPassword" className="form-label">
+              <label htmlFor="newPassword" className="form-label text-foreground dark:text-dark-foreground">
                 New Master Password
               </label>
               <div className="relative">
@@ -141,7 +140,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full" // Tailwind class from index.css will apply
+                className={themedInputClasses}
                 required
                 minLength={8}
                 autoComplete="new-password"
@@ -150,27 +149,26 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-secondary hover:text-text-primary"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground dark:text-dark-muted-foreground hover:text-primary dark:hover:text-dark-primary"
               >
                 {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
               </div>
               
-              {/* Password Requirements - Adjusted styling */}
-            {password && !allRequirementsMet && ( // Show only if password has input and not all met
+            {password && !allRequirementsMet && (
               <div className="mt-2 text-xs">
-                <p className="form-label text-xs mb-1">Password must contain:</p>
+                <p className="form-label text-xs mb-1 text-foreground dark:text-dark-foreground">Password must contain:</p>
                 <ul className="space-y-1">
                   {passwordChecks.map((check, index) => {
                     const isMet = check.test(password);
                     return (
-                      <li key={index} className={`flex items-center ${isMet ? 'text-success' : 'text-error'}`}>
+                      <li key={index} className={`flex items-center ${isMet ? 'text-tn-green' : 'text-destructive dark:text-dark-destructive'}`}>
                         {isMet ? (
-                          <FaCheck className="mr-1.5 flex-shrink-0" size={12} />
+                          <FaCheck className="mr-1.5 flex-shrink-0 text-tn-green" size={12} />
                         ) : (
-                          <FaTimes className="mr-1.5 flex-shrink-0" size={12} />
+                          <FaTimes className="mr-1.5 flex-shrink-0 text-destructive dark:text-dark-destructive" size={12} />
                         )}
-                        <span className="text-text-secondary">{check.label}</span>
+                        <span className="text-muted-foreground dark:text-dark-muted-foreground">{check.label}</span>
                       </li>
                     );
                   })}
@@ -180,7 +178,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
             </div>
           
           <div>
-            <label htmlFor="confirmPassword" className="form-label">
+            <label htmlFor="confirmPassword" className="form-label text-foreground dark:text-dark-foreground">
               Confirm New Password
             </label>
             <div className="relative">
@@ -189,7 +187,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full" // Tailwind class from index.css will apply
+                className={themedInputClasses}
                 required
                 minLength={8}
                 autoComplete="new-password"
@@ -198,7 +196,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-secondary hover:text-text-primary"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground dark:text-dark-muted-foreground hover:text-primary dark:hover:text-dark-primary"
               >
                 {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
@@ -216,28 +214,27 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 setConfirmPassword('');
               }}
               disabled={isResetting}
-              className="btn btn-secondary" // Using new button styles
+              className="btn btn-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isResetting || !password || !confirmPassword || !allRequirementsMet}
-              className="btn btn-primary bg-error hover:bg-red-700 text-background border-error hover:border-red-700" // Base .btn, but with error colors for emphasis
+              className="btn btn-destructive" // Use the semantic destructive button style
             >
               {isResetting ? 'Resetting...' : 'Reset Password'}
             </button>
           </div>
         </form>
         )}
-        {/* Show only close button on success */}
         {resetStatus === 'success' && (
           <div className="mt-6 flex justify-end">
             <button
               type="button"
               onClick={() => {
                 onClose();
-                setResetStatus(null); // Reset for next time
+                setResetStatus(null);
                 setFormError('');
                 setPassword('');
                 setConfirmPassword('');

@@ -4,7 +4,7 @@ import VaultEntryCard from './VaultEntryCard';
 const VaultEntriesList = ({ entries, onCopy, onEdit, onDelete }) => (
   <div className="w-full max-w-4xl mx-auto px-2 md:px-0">
     {entries.length === 0 ? (
-      <div className="text-center text-gray-500 dark:text-gold mt-8 text-lg">
+      <div className="text-center text-muted-foreground dark:text-dark-muted-foreground mt-8 text-lg">
         No vault entries found.
       </div>
     ) : (
