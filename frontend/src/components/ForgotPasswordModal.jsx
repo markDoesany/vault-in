@@ -242,7 +242,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 setPassword('');
                 setConfirmPassword('');
               }}
-              className="btn btn-primary"
+              className="btn btn-primary" 
             >
               Close
             </button>

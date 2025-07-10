@@ -154,7 +154,7 @@ const PasswordSettingsModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-white bg-gold hover:bg-yellow-600 rounded-md transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-800 rounded-md transition-colors"
           >
             Save Settings
           </button>
