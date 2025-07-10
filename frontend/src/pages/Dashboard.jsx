@@ -162,15 +162,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const SESSION_DURATION = 60 * 60; // seconds, for testing
-  const [sessionTimeLeft, setSessionTimeLeft] = useState(() => {
-    const stored = localStorage.getItem('vault_session_expiry');
-    if (stored) {
-      console.log('Stored expiry:', stored);
-      const diff = Math.floor((parseInt(stored, 10) - Date.now()) / 1000);
-      return diff > 0 ? diff : 0;
-    }
-    return SESSION_DURATION;
-  });
+  const [sessionTimeLeft, setSessionTimeLeft] = useState(SESSION_DURATION);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutCountdown, setLogoutCountdown] = useState(3);
 
@@ -194,7 +186,15 @@ const Dashboard = () => {
   }, [sessionTimeLeft]);
 
   useEffect(() => {
+    // Initialize session time from localStorage
     const stored = localStorage.getItem('vault_session_expiry');
+    if (stored) {
+      console.log('Stored expiry:', stored);
+      const diff = Math.floor((parseInt(stored, 10) - Date.now()) / 1000);
+      setSessionTimeLeft(diff > 0 ? diff : 0);
+    }
+
+    // Set new session expiry if needed
     if (!stored || parseInt(stored, 10) < Date.now()) {
       localStorage.setItem('vault_session_expiry', Date.now() + SESSION_DURATION * 1000);
     }

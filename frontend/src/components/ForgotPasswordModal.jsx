@@ -132,9 +132,10 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
         {resetStatus !== 'success' && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
+              <label htmlFor="newPassword" className="form-label">
                 New Master Password
-            </label>
-            <div className="relative">
+              </label>
+              <div className="relative">
               <input
                 id="newPassword"
                 type={showPassword ? 'text' : 'password'}
@@ -153,9 +154,9 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
               >
                 {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
-            </div>
-            
-            {/* Password Requirements - Adjusted styling */}
+              </div>
+              
+              {/* Password Requirements - Adjusted styling */}
             {password && !allRequirementsMet && ( // Show only if password has input and not all met
               <div className="mt-2 text-xs">
                 <p className="form-label text-xs mb-1">Password must contain:</p>
@@ -176,7 +177,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
                 </ul>
               </div>
             )}
-          </div>
+            </div>
           
           <div>
             <label htmlFor="confirmPassword" className="form-label">
