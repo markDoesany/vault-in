@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Tokyo Night Color Scheme */
+  --tn-bg: #1a1b26;
+  --tn-fg: #c0caf5;
+  --tn-comment: #565f89;
+  --tn-blue: #7aa2f7;
+  --tn-cyan: #7dcfff;
+  --tn-green: #9ece6a;
+  --tn-purple: #bb9af7;
+  --tn-red: #f7768e;
+  --tn-yellow: #e0af68;
+  --tn-orange: #ff9e64;
+  
+  /* Base colors */
+  --background: #ffffff;
+  --text-primary: #1a1b26;
+  --accent: #7aa2f7;
+  --primary: #7aa2f7;
+  --secondary: #7dcfff;
+  --primary-dark: #565f89;
+  --secondary-dark: #565f89;
+}
+
+.dark {
+  --background: var(--tn-bg);
+  --text-primary: var(--tn-fg);
+  --accent: var(--tn-blue);
+  --primary: var(--tn-blue);
+  --secondary: var(--tn-cyan);
+  --primary-dark: var(--tn-comment);
+  --secondary-dark: var(--tn-comment);
+}
+
 body {
   @apply font-sans bg-background dark:bg-tn-bg text-text-primary dark:text-tn-fg;
   min-height: 100vh;

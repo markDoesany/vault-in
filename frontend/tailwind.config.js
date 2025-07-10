@@ -11,9 +11,9 @@ module.exports = {
       },
       colors: {
         // Tokyo Night Dark Theme
-        'tn-bg': '#1a1b26',      // Background
+        'tn-bg': '#0f0f17',      // Darker background
         'tn-fg': '#c0caf5',      // Foreground text
-        'tn-card': '#24283b',    // Card / secondary background
+        'tn-card': '#1a1b26',    // Card / secondary background (slightly darker than before)
         'tn-comment': '#565f89', // Comments, subtle text
         'tn-blue': '#7aa2f7',
         'tn-cyan': '#7dcfff',
@@ -25,7 +25,7 @@ module.exports = {
         'tn-border': '#414868',  // A slightly lighter border for cards
 
         // Original colors (can be used for a light theme or as fallbacks)
-        'primary': '#0D47A1',
+        'primary': '#0f0f17',
         'primary-dark': '#002171',
         'secondary': '#E0E0E0', // Will be tn-card in dark mode
         'secondary-dark': '#BDBDBD',
