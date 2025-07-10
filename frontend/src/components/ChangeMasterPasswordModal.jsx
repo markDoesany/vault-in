@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaTimes } from 'react-icons/fa'; // Added FaTimes
+import React, { useState, useEffect } from 'react'; // Added useEffect
+import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaTimes } from 'react-icons/fa';
+import { changeMasterPassword } from '../services/api'; // Import API service
 
 const PasswordRequirement = ({ meets, label }) => (
   <li className={`flex items-center text-sm ${meets ? 'text-tn-green' : 'text-destructive dark:text-dark-destructive'}`}>
@@ -16,6 +17,23 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset form state when modal is opened/closed
+  useEffect(() => {
+    if (isOpen) {
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setError('');
+      setSuccessMessage('');
+      setShowOldPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
+      setIsSubmitting(false);
+    }
+  }, [isOpen]);
 
   const passwordChecks = [
     { label: 'At least 8 characters', test: (pw) => pw.length >= 8 },
@@ -25,10 +43,12 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
     { label: 'At least one special character', test: (pw) => /[^A-Za-z0-9]/.test(pw) },
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setError('');
+    setSuccessMessage('');
+
     if (!oldPassword) {
-      setError('Old password is required.');
+      setError('Current password is required.');
       return;
     }
     if (!newPassword) {
@@ -45,10 +65,32 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Simulate password change
-    console.log('Master password change attempt:', { oldPassword, newPassword });
-    alert('Master password change functionality is not yet implemented.'); // Placeholder
-    onClose(); // Close modal on successful (simulated) save
+    setIsSubmitting(true);
+    try {
+      const response = await changeMasterPassword({
+        currentPassword: oldPassword,
+        newPassword: newPassword,
+      });
+
+      if (response.success) {
+        setSuccessMessage(response.message || 'Master password changed successfully!');
+        // Clear fields after successful change
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        // Optionally close modal after a delay or let user close it
+        setTimeout(() => {
+          onClose();
+        }, 2000); // Close after 2 seconds
+      } else {
+        // This case should be caught by the reject in api.js
+        setError(response.message || 'Failed to change master password.');
+      }
+    } catch (apiError) {
+      setError(apiError.message || 'An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;

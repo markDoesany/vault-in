@@ -2,88 +2,119 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
-const AuthForm = ({ type }) => { // Removed onSubmit
+// Added onSubmit prop back
+const AuthForm = ({ type, onSubmit }) => {
   const [form, setForm] = useState({
     username: '',
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Added loading state
   const [showEmailTooltip, setShowEmailTooltip] = useState(false);
   const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false); // This might be handled by parent or removed if API handles OTP directly
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(''); // OTP might be handled by parent or API service
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(''); // Clear error on change
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic validation
-    if (!form.password) {
-      setError('Password is required');
+    setError('');
+    setIsLoading(true);
+
+    // Basic client-side validation
+    if (type === 'login' && !form.username) {
+      setError('Username is required');
+      setIsLoading(false);
       return;
     }
     if (type === 'signup' && !form.username) {
       setError('Username is required');
+      setIsLoading(false);
       return;
     }
     if (type === 'signup' && !form.email) {
       setError('Email is required');
+      setIsLoading(false);
       return;
     }
-    if (type === 'login' && !form.username) {
-      setError('Username is required');
+    if (!form.password) {
+      setError('Password is required');
+      setIsLoading(false);
       return;
     }
-    setError('');
     if (type === 'signup') {
-      setShowSuccessModal(true);
-    } else {
-      setShowOtpModal(true);
+      // Password strength check for signup
+      const passwordIsValid = passwordChecks.every(check => check.test(form.password));
+      if (!passwordIsValid) {
+        setError('Password does not meet requirements.');
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    try {
+      // onSubmit prop will be the actual API call function (loginUser or signupUser)
+      await onSubmit(form);
+      // Success handling (like navigation or showing success modal) will be managed by parent pages (Login.jsx, Signup.jsx)
+      // For signup, the parent might show a success message and redirect to login.
+      // For login, the parent might redirect to dashboard.
+      // If signup here should show a success modal before parent navigates:
+      if (type === 'signup') {
+         setShowSuccessModal(true); // Or this could be handled by the parent page after API success
+      }
+      // OTP modal might be triggered here or by parent depending on API flow
+      // For now, let's assume login success is handled by parent redirecting to dashboard.
+
+    } catch (apiError) {
+      setError(apiError.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = () => { // This is for the signup success modal
     setShowSuccessModal(false);
-    navigate('/login');
+    navigate('/login'); // Navigate to login after signup success
   };
 
-  const handleForgotPassword = async () => { // Removed newPassword parameter
-    // In a real app, this would make an API call to reset the password
-    // and clear the vault data on the server side
-    console.log('Resetting password and clearing vault data...');
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Clear local storage or any client-side vault data
-    localStorage.removeItem('vaultData');
-    
-    // In a real app, you would redirect to login or automatically log them in
-    // For now, we'll just close the modal and show a success message
+  const handleForgotPassword = async () => {
+    // This function will likely call an API endpoint in the future.
+    // For now, it's a placeholder as in the original code.
+    console.log('Initiating forgot password process for:', form.email || form.username);
+    // In a real app, this would make an API call to send a reset link or OTP.
+    // For now, we'll just close the modal and show a success message/alert.
     setShowForgotPasswordModal(false);
-    // alert('Password has been reset successfully. Please log in with your new password.'); // Modal handles this now
-    
-    // Clear the form
-    setForm({
-      username: '',
-      email: '',
-      password: '',
-    });
+    alert('If an account exists for this email, a password reset link will be sent.'); // Placeholder
+    setForm(prev => ({ ...prev, password: '' })); // Clear password
   };
 
+  // OTP handling might be revised based on actual API flow.
+  // If API expects OTP after initial login/signup, this could be used.
+  // For now, it's kept similar to original, but API service doesn't implement OTP flow yet.
   const handleOtpChange = (e) => setOtp(e.target.value);
-  const handleOtpVerify = () => {
-    setShowOtpModal(false);
-    // Simulate successful OTP verification and navigate to dashboard
-    navigate('/dashboard');
-    // If you want to still call onSubmit, you can do so here as well
-    // onSubmit({ ...form, otp });
+  const handleOtpVerify = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      // This would be another API call, e.g., verifyOtp(otp)
+      console.log('Verifying OTP:', otp);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setShowOtpModal(false);
+      navigate('/dashboard'); // Navigate on successful OTP verification
+    } catch (otpError) {
+      setError(otpError.message || 'Invalid OTP.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Password requirements checkers
