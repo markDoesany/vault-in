@@ -1,28 +1,47 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class', // or 'media' if you prefer OS-level setting
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Arial', 'Helvetica', 'sans-serif'], // Classic, widely available sans-serif font
+        sans: ['Arial', 'Helvetica', 'sans-serif'],
       },
       colors: {
-        'primary': '#0D47A1', // A strong, trustworthy blue
-        'primary-dark': '#002171', // Darker shade for hover/active states
-        'secondary': '#E0E0E0', // Light gray for backgrounds or secondary elements
-        'secondary-dark': '#BDBDBD', // Slightly darker gray
-        'accent': '#1565C0', // A brighter blue for accents, links
-        'text-primary': '#212121', // Dark gray for primary text, good contrast
-        'text-secondary': '#757575', // Lighter gray for secondary text
-        'background': '#FFFFFF', // Plain white background
-        'border': '#BDBDBD', // Border color
-        'success': '#2E7D32', // Green for success messages
-        'error': '#C62828', // Red for error messages
+        // Tokyo Night Dark Theme
+        'tn-bg': '#1a1b26',      // Background
+        'tn-fg': '#c0caf5',      // Foreground text
+        'tn-card': '#24283b',    // Card / secondary background
+        'tn-comment': '#565f89', // Comments, subtle text
+        'tn-blue': '#7aa2f7',
+        'tn-cyan': '#7dcfff',
+        'tn-green': '#9ece6a',
+        'tn-orange': '#ff9e64',
+        'tn-red': '#f7768e',
+        'tn-purple': '#bb9af7',
+        'tn-yellow': '#e0af68',
+        'tn-border': '#414868',  // A slightly lighter border for cards
+
+        // Original colors (can be used for a light theme or as fallbacks)
+        'primary': '#0D47A1',
+        'primary-dark': '#002171',
+        'secondary': '#E0E0E0', // Will be tn-card in dark mode
+        'secondary-dark': '#BDBDBD',
+        'accent': '#1565C0',    // Will be tn-blue or tn-purple in dark mode
+        'text-primary': '#212121', // Will be tn-fg in dark mode
+        'text-secondary': '#757575',// Will be tn-comment in dark mode
+        'background': '#FFFFFF', // Will be tn-bg in dark mode
+        'border': '#BDBDBD',     // Will be tn-border in dark mode
+        'success': '#2E7D32',    // Can be tn-green
+        'error': '#C62828',      // Can be tn-red
+
+        // Specific dark mode overrides if needed, otherwise Tailwind's dark: prefix will use these
+        'gold': '#e0af68', // Keeping 'gold' as it was used, maps to tn-yellow
       },
       borderRadius: {
-        'DEFAULT': '0.25rem', // Standard small border radius
+        'DEFAULT': '0.25rem',
         'md': '0.375rem',
         'lg': '0.5rem',
       },

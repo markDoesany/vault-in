@@ -1,62 +1,63 @@
-/* Removed Google Font import, Tailwind will use the sans-serif stack defined in config */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply font-sans bg-background text-text-primary;
+  @apply font-sans bg-background dark:bg-tn-bg text-text-primary dark:text-tn-fg;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased; /* Improves font rendering */
-  -moz-osx-font-smoothing: grayscale; /* Improves font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  @apply font-bold text-text-primary; /* Using Tailwind utility for consistency */
+  @apply font-bold text-text-primary dark:text-tn-fg;
 }
 
 a {
-  @apply text-accent font-semibold;
-  transition: color 0.2s ease-in-out; /* Smoother transition */
+  @apply text-accent dark:text-tn-blue font-semibold;
+  transition: color 0.2s ease-in-out;
 }
 a:hover {
-  @apply text-primary-dark; /* Using a color from the new palette */
+  @apply text-primary-dark dark:text-tn-cyan;
 }
 
 /* Base button styling */
 .btn {
-  /* Light gray button with dark blue text */
-  @apply px-4 py-2 rounded font-semibold text-primary bg-secondary border border-primary;
+  @apply px-4 py-2 rounded font-semibold;
+  @apply text-primary bg-secondary border border-primary; /* Light theme */
+  @apply dark:text-tn-fg dark:bg-tn-card dark:border-tn-blue; /* Dark theme */
   @apply transition-colors duration-150 ease-in-out;
   cursor: pointer;
 }
 
 .btn:hover {
-  /* Darker gray background and darker blue text on hover */
-  @apply bg-secondary-dark text-primary-dark border-primary-dark;
+  @apply bg-secondary-dark text-primary-dark border-primary-dark; /* Light theme hover */
+  @apply dark:bg-tn-comment dark:text-tn-cyan dark:border-tn-cyan; /* Dark theme hover */
 }
 
 .btn:focus {
-  @apply outline-none ring-2 ring-offset-2 ring-primary; /* Accessibility: focus ring */
+  @apply outline-none ring-2 ring-offset-2 ring-primary dark:ring-tn-blue;
 }
 
-/* This is now the primary button style, let's make btn-primary explicit if needed, or adjust btn-secondary if it should differ */
 .btn-primary {
-  @apply px-4 py-2 rounded font-semibold text-primary bg-secondary border border-primary;
+  @apply px-4 py-2 rounded font-semibold;
+  @apply text-primary bg-secondary border border-primary; /* Light theme */
+  @apply dark:text-tn-bg dark:bg-tn-blue dark:border-tn-blue; /* Dark theme: Blue button, dark text */
   @apply transition-colors duration-150 ease-in-out;
   cursor: pointer;
 }
 .btn-primary:hover {
-  @apply bg-secondary-dark text-primary-dark border-primary-dark;
+  @apply bg-secondary-dark text-primary-dark border-primary-dark; /* Light theme hover */
+  @apply dark:bg-tn-cyan dark:text-tn-bg dark:border-tn-cyan; /* Dark theme hover */
 }
 
-
-/* If a secondary button style is still needed, it might be a blue button or a more subtle gray */
 .btn-secondary {
-  /* Example: Blue button with white text, less prominent than the old primary */
-  @apply bg-accent text-background border-accent;
+  @apply bg-accent text-background border-accent; /* Light theme */
+  @apply dark:bg-tn-comment dark:text-tn-fg dark:border-tn-comment; /* Dark theme: Subtle button */
 }
 .btn-secondary:hover {
-  @apply bg-primary border-primary; /* Using primary as hover for accent */
+  @apply bg-primary border-primary; /* Light theme hover */
+  @apply dark:bg-tn-border dark:text-tn-cyan; /* Dark theme hover */
 }
 
 /* Input field styling */
@@ -65,25 +66,26 @@ input[type="email"],
 input[type="password"],
 input[type="search"],
 textarea {
-  @apply block w-full px-3 py-2 border border-border rounded shadow-sm;
-  @apply focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary;
-  @apply placeholder-text-secondary;
+  @apply block w-full px-3 py-2 rounded shadow-sm;
+  @apply border border-border dark:border-tn-border;
+  @apply bg-background dark:bg-tn-card; /* Input background */
+  @apply text-text-primary dark:text-tn-fg; /* Input text */
+  @apply placeholder-text-secondary dark:placeholder-tn-comment;
+  @apply focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-tn-blue focus:border-primary dark:focus:border-tn-blue;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-/* Styling for form elements to give a more "classic" feel */
 .form-label {
-  @apply block text-sm font-medium text-text-primary mb-1;
+  @apply block text-sm font-medium text-text-primary dark:text-tn-fg mb-1;
 }
 
 .form-container {
-  @apply bg-white p-6 md:p-8 shadow-lg rounded-lg border border-border;
-  max-width: 450px; /* Or your preferred max-width */
+  @apply bg-white dark:bg-tn-card p-6 md:p-8 shadow-lg rounded-lg border border-border dark:border-tn-border;
+  max-width: 450px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Card styling */
 .card {
-  @apply bg-white shadow-md rounded-lg border border-border p-4 md:p-6;
+  @apply bg-white dark:bg-tn-card shadow-md rounded-lg border border-border dark:border-tn-border p-4 md:p-6;
 }
