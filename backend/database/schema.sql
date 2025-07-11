@@ -4,6 +4,8 @@ CREATE TABLE users (
   email VARCHAR(100) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   otp_secret VARCHAR(255),
+  is_verified BOOLEAN DEFAULT FALSE,
+  encryption_salt VARCHAR(32) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,5 +49,16 @@ CREATE TABLE activity_logs (
   ip_address VARCHAR(45),
   user_agent TEXT,
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE user_sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL ADD CONSTRAINT unique_user_session UNIQUE (user_id),
+  token TEXT NOT NULL,
+  ip_address VARCHAR(45),
+  user_agent TEXT,
+  expires_at DATETIME NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

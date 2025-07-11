@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
-// import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/authRoutes.js";
 // import vaultRoutes from "./routes/vaultRoutes";
 // import errorHandler from "./middleware/errorHandler";
 
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // app routes
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 // app.use("/api/vault", vaultRoutes);
 
 // Error handler
