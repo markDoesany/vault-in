@@ -27,6 +27,7 @@ CREATE TABLE otp_logs (
   email VARCHAR(100),
   otp_code VARCHAR(10),
   status ENUM('sent', 'verified', 'expired', 'failed'),
+  type ENUM('registration','login') NOT NULL,
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

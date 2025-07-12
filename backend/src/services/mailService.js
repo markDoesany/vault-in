@@ -10,11 +10,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export async function sendOTPEmail({to, otp}){
+export async function sendOTPEmail({to, subject, otp}){
     const mailOptions = {
         from: process.env.OTP_EMAIL,
         to,
-        subject: "Your Vaul-In OTP Code",
+        subject,
         text: `Your one-time passcode is: ${otp}. This code expires in 5 minutes.`
     }
 
