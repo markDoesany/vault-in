@@ -1,4 +1,9 @@
-import { registerUser, loginStep1, loginStep2 } from "../services/authServices.js";
+import { registerUser, 
+         loginStep1, 
+         loginStep2, 
+         resetUserPassword, 
+         requestPasswordReset 
+      } from "../services/authServices.js";
 import { generateAndSendOTP, verifyOTP } from "../services/otpService.js";
 
 async function handleRegistration(req, res, next){
@@ -103,10 +108,77 @@ async function handleLogin(req, res, next) {
       next(err);
     }
   }
+
+async function handleForgotPasswordRequest(req, res, next) {
+  try {
+    const { email } = req.body;
+    if (!email){
+      return res.status(400).json({ error: "Email is required"})
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    const ip = req.ip || req.headers['x-forwarded-for'];
+    const userAgent = req.headers['user-agent'];
+    
+    const result = await requestPasswordReset(email, ip, userAgent);
+    if (!result.success) {
+      return res.status(400).json({ error: result.message });
+    }
+
+    return res.status(200).json({ message: 'Reset password OTP sent to your email' });
+  } catch (error) {
+    next(error);
+  }
+}
   
+async function handleForgotPasswordOTPVerification(req, res, next){
+  try {
+    const {userId, otp} = req.body;
+    if (!userId || !otp){
+      return res.status(400).json({error: "User ID and OTP are required"});
+    }
+    const result = await verifyOTP(userId, 'reset_password', otp);
+    if (!result.success){
+      return res.status(400).json({error: result.message});
+    }
+  
+    return res.status(200).json({message: "OTP verified successfully. You may now reset your password."});
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function handleForgotPasswordReset(req, res, next){
+  try {
+    const {userId, newPassword} = req.body;
+  
+    if (!userId || !newPassword){
+      return res.status(400).json({error: "User ID and password are required"});
+    }
+    const ip = req.ip || req.headers['x-forwarded-for'];
+    const userAgent = req.headers['user-agent'];
+
+    const result = await resetUserPassword(userId, newPassword, ip, userAgent);
+
+    if (!result.success){
+      return res.status(400).json({error: result.message});
+    }
+
+    return res.status(200).json({message: "Password reset successfully. Vault entries have been purged"})
+  } catch (error) {
+    next(error);
+  }
+}
+
 export{
     handleRegistration,
     handleOTPVerification,
     handleResendOTP,
     handleLogin,
+    handleForgotPasswordRequest,
+    handleForgotPasswordOTPVerification,
+    handleForgotPasswordReset
 };

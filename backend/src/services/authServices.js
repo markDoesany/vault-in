@@ -67,7 +67,6 @@ async function loginStep2({email, password, otp, ip, userAgent}){
     if (!ok.success) {
         return { success: false, message: ok.message };
     }
-    console.log("OTP verified");
 
     const aesKey = crypto.pbkdf2Sync(password, user.encryption_salt, 100000, 32, "sha256");
     const token = jwt.sign(
@@ -88,13 +87,124 @@ async function loginStep2({email, password, otp, ip, userAgent}){
          VALUES (?, 'login', ?, ?, ?)`,
         [user.id, email, ip, userAgent]
       );
-      
+
+    await pool.execute(
+        `UPDATE otp_logs
+            SET status = 'used'
+            WHERE user_id = ? AND otp_code = ? AND type = ?
+            ORDER BY timestamp DESC LIMIT 1`,
+        [user.id, otp, 'login']
+    )
     
     return {success: true, token: token, aesKey: aesKey.toString("hex")};
+}
+
+async function requestPasswordReset(email, ip, userAgent) {
+  const [rows] = await pool.execute(
+    'SELECT id FROM users WHERE email = ?',
+    [email]
+  );
+
+  if (!rows.length) {
+    return { success: false, message: 'No account found with that email.' };
+  }
+
+  const userId = rows[0].id;
+
+  await generateAndSendOTP(userId, 'reset_password', email);
+
+  await pool.execute(
+    `INSERT INTO activity_logs
+     (user_id, action_type, target, ip_address, user_agent)
+     VALUES (?, 'otp_requested', ?, ?, ?)`,
+    [userId, email, ip, userAgent]
+  );
+
+  return { success: true, userId };
+}
+
+async function resetUserPassword(userId, newPassword, ip, userAgent) {
+  try {
+    const [userRows] = await pool.execute(
+      `SELECT password_hash, email FROM users WHERE id = ?`,
+      [userId]
+    );
+    if (!userRows.length) {
+      return { success: false, message: 'User not found.' };
+    }
+
+    const { password_hash, email } = userRows[0];
+
+    const isSame = await bcrypt.compare(newPassword, password_hash);
+    if (isSame) {
+      return { success: false, message: 'New password must be different from the old one.' };
+    }
+
+    const [otpRows] = await pool.execute(
+      `SELECT id FROM otp_logs
+       WHERE user_id = ? AND type = 'reset_password' AND status = 'verified'
+       ORDER BY timestamp DESC LIMIT 1`,
+      [userId]
+    );
+
+    if (!otpRows.length) {
+      return { success: false, message: 'No verified OTP found. Please verify your reset code first.' };
+    }
+
+    const otpId = otpRows[0].id;
+
+    await pool.execute(
+      `UPDATE otp_logs
+       SET status = 'used'
+       WHERE user_id = ? AND id = ? AND type = ?`,
+      [userId, otpId, 'reset_password']
+    )
+
+    const newSalt = crypto.randomBytes(16).toString("hex");
+    const newPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    await pool.execute(
+      `UPDATE users
+       SET password_hash = ?, encryption_salt = ?
+       WHERE id = ?`,
+      [newPasswordHash, newSalt, userId]
+    );
+
+    await pool.execute(
+      `DELETE FROM vault_entries WHERE user_id = ?`,
+      [userId]
+    );
+
+    await pool.execute(
+      `DELETE FROM user_sessions WHERE user_id = ?`,
+      [userId]
+    );
+
+    await pool.execute(
+      `INSERT INTO activity_logs
+       (user_id, action_type, target, ip_address, user_agent)
+       VALUES (?, 'change_password', ?, ?, ?)`,
+      [userId, email, ip, userAgent]
+    );
+
+    await pool.execute(
+      `INSERT INTO activity_logs
+       (user_id, action_type, target, ip_address, user_agent)
+       VALUES (?, 'delete_entry', 'vault_wipe_due_to_reset', ?, ?)`,
+      [userId, ip, userAgent]
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error('Password reset error:', error);
+    return { success: false, message: 'Failed to reset password.' };
+  }
 }
 
 export {
     registerUser,
     loginStep1,
     loginStep2,
+    requestPasswordReset,
+    resetUserPassword
 }
