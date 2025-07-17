@@ -1,12 +1,45 @@
-// Simulate API calls
-
-const MOCK_DELAY = 500; // ms
+const MOCK_DELAY = 500;
 
 const logCall = (functionName, params) => {
-  console.log(`API Call: ${functionName}`, params);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`API Call: ${functionName}`, params);
+  }
 };
 
-// --- Auth ---
+const MOCK_VAULT_ENTRIES = [
+  {
+    id: '1',
+    platform: 'Facebook',
+    username: 'john.doe',
+    password: 'hunter2',
+    tags: ['Social'],
+    updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: '2',
+    platform: 'Chase Bank',
+    username: 'jane.finance',
+    password: 'Super$ecret1',
+    tags: ['Finance'],
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: '3',
+    platform: 'Gmail',
+    username: 'clint@email.com',
+    password: 'EmailPass!2024',
+    tags: ['Personal', 'Email'],
+    updatedAt: new Date().toISOString(),
+  },
+];
+
+const processTags = (tags) => {
+  if (!tags) return [];
+  return Array.isArray(tags) 
+    ? tags.filter(tag => tag && tag.trim())
+    : tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+};
+
 export const loginUser = async (credentials) => {
   logCall('loginUser', credentials);
   return new Promise((resolve, reject) => {
@@ -41,41 +74,13 @@ export const signupUser = async (userData) => {
   });
 };
 
-// --- Vault Entries ---
-let MOCK_VAULT_ENTRIES = [
-  {
-    id: '1',
-    platform: 'Facebook',
-    username: 'john.doe',
-    password: 'hunter2',
-    tags: ['Social'],
-    updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: '2',
-    platform: 'Chase Bank',
-    username: 'jane.finance',
-    password: 'Super$ecret1',
-    tags: ['Finance'],
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: '3',
-    platform: 'Gmail',
-    username: 'clint@email.com',
-    password: 'EmailPass!2024',
-    tags: ['Personal', 'Email'],
-    updatedAt: new Date().toISOString(),
-  },
-];
-
 export const getVaultEntries = async () => {
   logCall('getVaultEntries');
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         success: true,
-        entries: [...MOCK_VAULT_ENTRIES], // Return a copy
+        entries: [...MOCK_VAULT_ENTRIES],
       });
     }, MOCK_DELAY);
   });
@@ -87,9 +92,9 @@ export const addVaultEntry = async (entryData) => {
     setTimeout(() => {
       const newEntry = {
         ...entryData,
-        id: String(Date.now()), // Simulate ID generation
+        id: String(Date.now()),
         updatedAt: new Date().toISOString(),
-        tags: entryData.tags ? entryData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+        tags: processTags(entryData.tags),
       };
       MOCK_VAULT_ENTRIES.push(newEntry);
       resolve({
@@ -107,16 +112,17 @@ export const updateVaultEntry = async (entryId, entryData) => {
     setTimeout(() => {
       const index = MOCK_VAULT_ENTRIES.findIndex(entry => entry.id === entryId);
       if (index !== -1) {
-        MOCK_VAULT_ENTRIES[index] = {
+        const updatedEntry = {
           ...MOCK_VAULT_ENTRIES[index],
           ...entryData,
-          tags: entryData.tags ? (Array.isArray(entryData.tags) ? entryData.tags : entryData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)) : MOCK_VAULT_ENTRIES[index].tags,
+          tags: entryData.tags ? processTags(entryData.tags) : MOCK_VAULT_ENTRIES[index].tags,
           updatedAt: new Date().toISOString(),
         };
+        MOCK_VAULT_ENTRIES[index] = updatedEntry;
         resolve({
           success: true,
           message: 'Entry updated successfully',
-          entry: MOCK_VAULT_ENTRIES[index],
+          entry: updatedEntry,
         });
       } else {
         reject({
@@ -149,21 +155,19 @@ export const deleteVaultEntry = async (entryId) => {
   });
 };
 
-// --- Master Password ---
 export const changeMasterPassword = async (passwordData) => {
   logCall('changeMasterPassword', passwordData);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Simulate password change logic
-      if (passwordData.currentPassword === 'password') { // Mock current password check
+      if (passwordData.currentPassword === 'password') {
         resolve({
           success: true,
-          message: 'Master password changed successfully.',
+          message: 'Master password changed successfully',
         });
       } else {
         reject({
           success: false,
-          message: 'Incorrect current master password.',
+          message: 'Incorrect current master password',
         });
       }
     }, MOCK_DELAY);

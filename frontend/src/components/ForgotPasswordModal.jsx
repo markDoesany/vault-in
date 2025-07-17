@@ -62,7 +62,6 @@ const ForgotPasswordModal = ({ isOpen, onClose, onResetPassword }) => {
       await onResetPassword(password);
       setResetStatus('success');
       setResetMessage('Master password has been reset successfully!');
-      // Clear form fields on success
       setPassword('');
       setConfirmPassword('');
     } catch (err) {

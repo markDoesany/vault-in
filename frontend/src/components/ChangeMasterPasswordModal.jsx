@@ -20,7 +20,6 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset form state when modal is opened/closed
   useEffect(() => {
     if (isOpen) {
       setOldPassword('');
@@ -74,16 +73,13 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
 
       if (response.success) {
         setSuccessMessage(response.message || 'Master password changed successfully!');
-        // Clear fields after successful change
         setOldPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        // Optionally close modal after a delay or let user close it
         setTimeout(() => {
           onClose();
-        }, 2000); // Close after 2 seconds
+        }, 2000); 
       } else {
-        // This case should be caught by the reject in api.js
         setError(response.message || 'Failed to change master password.');
       }
     } catch (apiError) {
@@ -166,7 +162,6 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
               </button>
             </div>
 
-            {/* Password Requirements */}
             {newPassword.length > 0 && (
               <ul className="mt-2 space-y-1 pl-1">
                 {passwordChecks.map((check) => (
@@ -179,7 +174,6 @@ const ChangeMasterPasswordModal = ({ isOpen, onClose }) => {
               </ul>
             )}
 
-            {/* Confirm New Password */}
             <div className="relative">
               <label className={labelClasses} htmlFor="confirmPassword">
                 Confirm New Password

@@ -116,14 +116,14 @@ const PasswordSettingsModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-secondary" // Use semantic button class
+            className="btn btn-secondary" 
           >
             Cancel
           </button>
           <button
             type="button"
-            onClick={onClose} // Assuming settings are applied on change, so close acts as save
-            className="btn btn-primary" // Use semantic button class
+            onClick={onClose} 
+            className="btn btn-primary" 
           >
             Done
           </button>

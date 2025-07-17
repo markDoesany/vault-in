@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes, FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash, FaCog } from 'react-icons/fa';
 
 const AddEntryModal = ({
@@ -9,15 +9,14 @@ const AddEntryModal = ({
   handleAddEntryChange,
   handleAddEntrySave,
   passwordChecks,
-  showPasswordTooltip,
-  setShowPasswordTooltip,
   generatePassword,
-  setShowPasswordSettings, // This is used to open the settings modal
+  setShowPasswordSettings,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState(null); // null, 'success', 'error'
+  const [saveStatus, setSaveStatus] = useState(null);
   const [saveMessage, setSaveMessage] = useState('');
+  const [localShowPasswordTooltip, setLocalShowPasswordTooltip] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -28,11 +27,9 @@ const AddEntryModal = ({
     setSaveMessage('');
 
     try {
-      await handleAddEntrySave(e); // Pass the event if the original handler expects it
+      await handleAddEntrySave(e);
       setSaveStatus('success');
       setSaveMessage('Vault entry saved successfully!');
-      // Parent component is expected to close the modal and reset form on actual success
-      // If not, we might need to clear newEntry state here or via a callback
     } catch (error) {
       setSaveStatus('error');
       setSaveMessage(error.message || 'Failed to save entry. Please try again.');
@@ -41,15 +38,15 @@ const AddEntryModal = ({
     }
   };
 
-  // Reset save status when modal is closed/reopened
-  React.useEffect(() => {
+  useEffect(() => {
     if (!addModalOpen) {
       setSaveStatus(null);
       setSaveMessage('');
-      setIsSaving(false); // Ensure saving state is reset
+      setIsSaving(false);
+      setShowPassword(false);
+      setLocalShowPasswordTooltip(false);
     }
   }, [addModalOpen]);
-
 
   if (!addModalOpen) return null;
 
@@ -70,33 +67,35 @@ const AddEntryModal = ({
         >
           <FaTimes size={20}/>
         </button>
-        <h2 className="text-xl font-semibold text-foreground dark:text-dark-foreground text-center mb-2">Add New Vault Entry</h2>
+        
+        <h2 className="text-xl font-semibold text-foreground dark:text-dark-foreground text-center mb-2">
+          Add New Vault Entry
+        </h2>
 
-        {/* Save Status Messages */}
         {saveStatus === 'success' && (
           <div className="flex items-center bg-tn-green/10 border-l-4 border-tn-green text-tn-green p-3 rounded-md mb-3">
             <FaCheckCircle className="mr-2" />
             <span className="text-sm font-semibold">{saveMessage}</span>
           </div>
         )}
+        
         {saveStatus === 'error' && (
           <div className="flex items-center bg-destructive/10 border-l-4 border-destructive dark:border-dark-destructive text-destructive dark:text-dark-destructive p-3 rounded-md mb-3">
             <FaTimesCircle className="mr-2" />
             <span className="text-sm font-semibold">{saveMessage}</span>
           </div>
         )}
-        {/* Display existing addEntryError if no save attempt has been made or if it's a different kind of error */}
+        
         {addEntryError && !saveStatus && (
           <div className="w-full text-center bg-destructive/10 text-destructive dark:text-dark-destructive border border-destructive dark:border-dark-destructive rounded p-2 mb-2 text-sm">
             {addEntryError}
           </div>
         )}
 
-        {/* Hide form fields on successful save to prevent re-submission, show a clear message */}
         {saveStatus !== 'success' && (
           <>
             <input
-              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground" // Inherits global input style from index.css
+              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground"
               type="text"
               name="platform"
               placeholder="Platform Name (e.g., Google, Facebook)"
@@ -106,8 +105,9 @@ const AddEntryModal = ({
               autoFocus
               disabled={isSaving}
             />
+            
             <input
-              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground" // Inherits global input style
+              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground"
               type="text"
               name="username"
               placeholder="Username or Email"
@@ -116,18 +116,19 @@ const AddEntryModal = ({
               required
               disabled={isSaving}
             />
+            
             <div className="flex flex-col gap-1 relative">
               <div className="relative">
                 <input
-                  className="w-full pr-28 placeholder-muted-foreground dark:placeholder-dark-muted-foreground" // Inherits global style, pr for buttons
+                  className="w-full pr-28 placeholder-muted-foreground dark:placeholder-dark-muted-foreground"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Password"
                   value={newEntry.password}
                   onChange={handleAddEntryChange}
                   required
-                  onFocus={() => setShowPasswordTooltip(true)}
-                  onBlur={() => setShowPasswordTooltip(false)}
+                  onFocus={() => setLocalShowPasswordTooltip(true)}
+                  onBlur={() => setLocalShowPasswordTooltip(false)}
                   aria-describedby="add-password-tooltip"
                   disabled={isSaving}
                 />
@@ -160,12 +161,15 @@ const AddEntryModal = ({
                   </button>
                 </div>
               </div>
-              {showPasswordTooltip && newEntry.password && !passwordChecks.every(check => check.test(newEntry.password)) && (
+              
+              {localShowPasswordTooltip && newEntry.password && !passwordChecks.every(check => check.test(newEntry.password)) && (
                 <div
                   id="add-password-tooltip"
                   className="absolute left-0 top-full mt-1 z-20 w-full bg-popover text-popover-foreground dark:bg-dark-popover dark:text-dark-popover-foreground rounded-lg shadow-md p-3 text-xs border border-border dark:border-dark-border"
                 >
-                  <div className="font-semibold mb-1 text-foreground dark:text-dark-foreground">Password requirements:</div>
+                  <div className="font-semibold mb-1 text-foreground dark:text-dark-foreground">
+                    Password requirements:
+                  </div>
                   <ul className="space-y-0.5">
                     {passwordChecks.map((check, idx) => {
                       const passed = check.test(newEntry.password);
@@ -176,7 +180,9 @@ const AddEntryModal = ({
                           ) : (
                             <FaTimesCircle className="text-destructive dark:text-dark-destructive" size={14}/>
                           )}
-                          <span className={passed ? 'text-foreground dark:text-dark-foreground' : 'text-muted-foreground dark:text-dark-muted-foreground'}>{check.label}</span>
+                          <span className={passed ? 'text-foreground dark:text-dark-foreground' : 'text-muted-foreground dark:text-dark-muted-foreground'}>
+                            {check.label}
+                          </span>
                         </li>
                       );
                     })}
@@ -184,8 +190,9 @@ const AddEntryModal = ({
                 </div>
               )}
             </div>
+            
             <input
-              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground" // Inherits global style
+              className="w-full placeholder-muted-foreground dark:placeholder-dark-muted-foreground"
               type="text"
               name="tags"
               placeholder="Tags (comma separated, e.g. Finance, Email)"
@@ -193,8 +200,9 @@ const AddEntryModal = ({
               onChange={handleAddEntryChange}
               disabled={isSaving}
             />
+            
             <textarea
-              className="w-full min-h-[60px] placeholder-muted-foreground dark:placeholder-dark-muted-foreground" // Inherits global style
+              className="w-full min-h-[60px] placeholder-muted-foreground dark:placeholder-dark-muted-foreground"
               name="notes"
               placeholder="Optional Notes"
               value={newEntry.notes}
@@ -202,14 +210,15 @@ const AddEntryModal = ({
               rows={2}
               disabled={isSaving}
             />
+            
             <button
               type="submit"
-              className="btn btn-primary w-full mt-2" // Uses updated .btn & .btn-primary styles
+              className="btn btn-primary w-full mt-2"
               disabled={
                 isSaving ||
                 !newEntry.platform ||
                 !newEntry.username ||
-                !newEntry.password || // Also ensure password is not empty
+                !newEntry.password ||
                 !passwordChecks.every(check => check.test(newEntry.password))
               }
             >
