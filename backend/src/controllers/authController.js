@@ -2,7 +2,8 @@ import { registerUser,
          loginStep1, 
          loginStep2, 
          resetUserPassword, 
-         requestPasswordReset 
+         requestPasswordReset,
+         logoutUser
       } from "../services/authServices.js";
 import { generateAndSendOTP, verifyOTP } from "../services/otpService.js";
 
@@ -173,6 +174,25 @@ async function handleForgotPasswordReset(req, res, next){
   }
 }
 
+
+async function handleLogout(req, res, next){
+  try {
+    const { id: userId, email} =  req.user;
+    const ip = req.ip || req.headers['x-forwarded-for'];
+    const userAgent = req.headers['user-agent'];
+    
+    const result = await logoutUser(userId, ip, userAgent);
+    if (!result.success){
+      return res.status(400).json({error: result.message});
+    }
+
+    return res.status(200).json({message: "You have been logout successfully"});
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 export{
     handleRegistration,
     handleOTPVerification,
@@ -180,5 +200,6 @@ export{
     handleLogin,
     handleForgotPasswordRequest,
     handleForgotPasswordOTPVerification,
-    handleForgotPasswordReset
+    handleForgotPasswordReset,
+    handleLogout
 };

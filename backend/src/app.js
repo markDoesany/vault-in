@@ -3,10 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import vaultRoutes from "./routes/vaultRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js"
 import {errorHandler} from "./middleware/errorHandler.js";
-// import sessionGuard from "./middleware/sessionGuard.js";
-// import activityLogger from "./middleware/activityLogger.js";
-// import vaultRoutes from "./routes/vaultRoutes";
 
 dotenv.config({debug: false, override: true});
 
@@ -29,7 +28,8 @@ app.use(express.json({
 
 // app routes
 app.use("/api/auth", authRoutes);
-// app.use("/api/vault", vaultRoutes);
+app.use("/api/vault", vaultRoutes);
+app.use("/api/activity", activityRoutes);
 
 // Error handler
 app.use(errorHandler);

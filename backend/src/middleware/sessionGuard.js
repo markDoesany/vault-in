@@ -7,11 +7,13 @@ export async function sessionGuard(req, res, next){
     if(!authHeader || !authHeader.startsWith('Bearer ')){
         return res.status(401).json({ error: "No token provided"});
     }
-    
-    const token = authHeader.split(' ')[1];
+    const tokenPart = authHeader.split(' ')[1];
+    const token = tokenPart.startsWith('SessionToken=')
+    ? tokenPart.split('SessionToken=')[1]
+    : tokenPart;
 
     try {
-        const decoded = jwt.verifyToken(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const [rows] = await pool.execute(
             `SELECT * from user_sessions WHERE user_id = ? AND token = ? AND expires_at > NOW()`,
             [decoded.userId, token]

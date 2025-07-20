@@ -6,9 +6,12 @@ import {
         handleLogin, 
         handleForgotPasswordRequest,
         handleForgotPasswordOTPVerification,
-        handleForgotPasswordReset   
+        handleForgotPasswordReset,
+        handleLogout   
     } from "../controllers/authController.js";
 import { otpResendLimiter } from "../middleware/rateLimiter.js";
+import {sessionGuard} from "../middleware/sessionGuard.js";
+
 
 const router = express.Router();
 
@@ -19,5 +22,7 @@ router.post("/login", handleLogin);
 router.post("/forgot-password/request", handleForgotPasswordRequest);
 router.post("/forgot-password/verify",  handleForgotPasswordOTPVerification);
 router.post("/forgot-password/reset", handleForgotPasswordReset);
+
+router.post("/logout", sessionGuard, handleLogout)
 
 export default router;

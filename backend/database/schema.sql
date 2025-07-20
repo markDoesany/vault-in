@@ -11,13 +11,17 @@
 
   CREATE TABLE vault_entries (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL, -- Soft delete flag
     user_id INT NOT NULL,
     service_name VARCHAR(100) NOT NULL,
     encrypted_username TEXT NOT NULL,
     encrypted_password TEXT NOT NULL,
     iv VARBINARY(16) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    tags JSON,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   );
 

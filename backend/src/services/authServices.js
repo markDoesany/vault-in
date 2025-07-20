@@ -201,10 +201,39 @@ async function resetUserPassword(userId, newPassword, ip, userAgent) {
   }
 }
 
+async function logoutUser(userId, ip, userAgent){
+  try {
+    await pool.execute(
+      `DELETE FROM user_sessions WHERE user_id = ?`,
+      [userId]
+    );
+
+    const [userRows] = await pool.execute(
+      `SELECT email FROM users WHERE id = ?`,
+      [userId]
+    )
+
+    const email = userRows[0].email;
+
+    await pool.execute(
+      `INSERT INTO activity_logs
+       (user_id, action_type, target, ip_address, user_agent)
+       VALUES (?, 'logout', ?, ?, ?)`,
+      [userId, email, ip, userAgent]
+    )
+
+    return { success: true };
+  } catch (error) {
+    console.error('Logout error:', error);
+    return { success: false, message: 'Failed to logout.' };
+  }
+}
+
 export {
     registerUser,
     loginStep1,
     loginStep2,
     requestPasswordReset,
-    resetUserPassword
+    resetUserPassword,
+    logoutUser
 }
